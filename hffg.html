@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SkyCool Flux Pods 3D Simulation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+    #overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    button {
+      margin-top: 6px;
+      padding: 6px 12px;
+      background: linear-gradient(90deg, #334, #556);
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover { background: linear-gradient(90deg, #445, #667); }
+  </style>
+</head>
+<body>
+<div id="overlay">
+  <h3>🔥 SkyCool™ Flux Pods 3D</h3>
+  <p>Drag the glowing sphere (hot zone) to influence liquid flow.</p>
+  <button id="resetBtn">Reset</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+  // Scene setup
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0a0a15);
+
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 10, 25);
+
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+  scene.add(ambient);
+
+  const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+  dir.position.set(10,20,10);
+  scene.add(dir);
+
+  // Pipe (cylinder)
+  const pipeGeo = new THREE.CylinderGeometry(2,2,30,32,1,true);
+  const pipeMat = new THREE.MeshStandardMaterial({
+    color: 0x223344,
+    metalness: 0.7,
+    roughness: 0.4,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.5
+  });
+  const pipe = new THREE.Mesh(pipeGeo, pipeMat);
+  pipe.rotation.z = Math.PI/2;
+  scene.add(pipe);
+
+  // Liquid (flowing particles)
+  const liquidParticles = [];
+  const liquidGeo = new THREE.SphereGeometry(0.15,12,12);
+  const liquidMat = new THREE.MeshStandardMaterial({ color: 0x33ccff, emissive: 0x116688 });
+  for(let i=0;i<100;i++){
+    const p = new THREE.Mesh(liquidGeo, liquidMat.clone());
+    p.position.set(-15+Math.random()*30, (Math.random()-0.5)*3, (Math.random()-0.5)*3);
+    scene.add(p);
+    liquidParticles.push(p);
+  }
+
+  // Hot zone (glowing sphere)
+  const hotGeo = new THREE.SphereGeometry(1.5,32,32);
+  const hotMat = new THREE.MeshBasicMaterial({ color:0xff6633, transparent:true, opacity:0.5 });
+  const hotZone = new THREE.Mesh(hotGeo, hotMat);
+  hotZone.position.set(0,0,0);
+  scene.add(hotZone);
+
+  const hotGlow = new THREE.PointLight(0xff6633, 2, 12);
+  hotZone.add(hotGlow);
+
+  // Mouse drag logic for hot zone
+  let dragging=false;
+  window.addEventListener('mousedown', ()=>{dragging=true;});
+  window.addEventListener('mouseup', ()=>{dragging=false;});
+  window.addEventListener('mousemove', e=>{
+    if(dragging){
+      const mouse = new THREE.Vector2(
+        (e.clientX/window.innerWidth)*2-1,
+        -(e.clientY/window.innerHeight)*2+1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse,camera);
+      const plane = new THREE.Plane(new THREE.Vector3(0,1,0),0);
+      const intersect = new THREE.Vector3();
+      raycaster.ray.intersectPlane(plane,intersect);
+      hotZone.position.copy(intersect);
+    }
+  });
+
+  // Reset button
+  document.getElementById('resetBtn').onclick=()=>{
+    hotZone.position.set(0,0,0);
+  };
+
+  // Animate
+  function animate(){
+    requestAnimationFrame(animate);
+    controls.update();
+
+    // Liquid flow
+    for(const p of liquidParticles){
+      p.position.x += 0.08 + Math.random()*0.02;
+
+      // Influence by hot zone
+      const dist = p.position.distanceTo(hotZone.position);
+      if(dist<5){
+        p.material.color.set(0xff5533);
+        p.material.emissive.set(0xaa2200);
+        p.position.y += (Math.random()-0.5)*0.2;
+        p.position.z += (Math.random()-0.5)*0.2;
+      } else {
+        p.material.color.set(0x33ccff);
+        p.material.emissive.set(0x116688);
+      }
+
+      if(p.position.x>15) p.position.x=-15;
+    }
+
+    renderer.render(scene,camera);
+  }
+  animate();
+
+  window.addEventListener('resize',()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+</script>
+</body>
+</html>

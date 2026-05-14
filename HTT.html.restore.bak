@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forest Article</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        background: #ffffff;
+    }
+
+    /* HEADER */
+  .top-bar {
+    width: 100%;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff; /* fallback color */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+
+n    .logo {
+        height: 30px;
+    }
+  .top-bar .logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+  }
+  .top-thumb {
+    height: 36px;
+    width: auto;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+
+n  /* When a background image is successfully loaded we add this class */
+  .top-bar.bg-loaded {
+    color: #fff;
+  }
+  .top-bar.bg-loaded::after {
+    /* subtle dark overlay to keep text readable */
+    content: '';
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background: rgba(0,0,0,0.18);
+    pointer-events: none;
+  }
+
+n    /* ARTICLE CONTAINER */
+    .article-container {
+        width: 60%;
+        max-width: 850px;
+        margin: 40px auto;
+        font-size: 19px;
+        line-height: 1.7;
+        color: #333;
+    }
+
+n    /* DROP CAP */
+    .dropcap::first-letter {
+        font-size: 60px;
+        float: left;
+        line-height: 0.9;
+        padding-right: 10px;
+        font-weight: bold;
+    }
+
+n    /* IMAGES */
+    .article-img {
+        width: 100%;
+        margin: 30px 0 10px;
+        border-radius: 4px;
+    }
+
+n    .article-img-small {
+        width: 60%;
+        float: right;
+        margin: 20px 0 20px 20px;
+        border-radius: 4px;
+    }
+
+n    /* CAPTION */
+    .caption {
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 25px;
+    }
+
+n    /* BACK TO TOP BUTTON */
+    .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: black;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-size: 12px;
+        text-decoration: none;
+        opacity: 0.8;
+        transition: 0.3s;
+    }
+
+n    .back-to-top:hover {
+        opacity: 1;
+    }
+    /* PAGE HEADING AREA */
+    .page-header {
+        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        padding: 28px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .page-header .article-heading {
+        width: 60%;
+        max-width: 850px;
+        margin: 0 auto;
+        text-align: left;
+    }
+    .page-header h1 {
+        margin: 0 0 6px 0;
+        font-family: 'Georgia', serif;
+        font-size: 28px;
+        color: #0b2540;
+        line-height: 1.15;
+    }
+    .page-header .subtitle {
+        margin: 0;
+        color: #556677;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topbar Image Only</title>
+
+n<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+n  /* FULL-WIDTH IMAGE TOPBAR
+     NOTE: avoid Windows absolute paths (C:\...) in CSS; use a relative path
+     (for example place the image at `hg/images/Yamuna-1.png` and use
+     `url("images/Yamuna-1.png")`). Below we use a remote placeholder and
+     try to swap to a local image if present. */
+  .top-image{
+    width:100%;
+    height:520px;       /* adjust height if needed */
+    /* Fallback to repo image files that already exist so GitHub Pages serves them */
+    background-image:url("2.png");
+    background-size:cover;
+    background-position:center;
+  }
+</style>
+
+n</head>
+<body>
+
+<!-- ONLY THE IMAGE -->
+<div class="top-image" data-local="2.png"></div>
+
+n<script>
+  // Try to load a local image (relative to site root) if present; otherwise keep the placeholder
+  (function(){
+    var el = document.querySelector('.top-image');
+    if(!el) return;
+    var local = el.dataset.local;
+    if(!local) return;
+    var img = new Image();
+    img.onload = function(){ el.style.backgroundImage = 'url("'+local+'")'; };
+    img.onerror = function(){ console.warn('Local top-image not found:', local); };
+    img.src = local;
+  })();
+</script>
+
+n</body>
+</html>
+
+
+<!-- Dedicated page heading area -->
+<section class="page-header" aria-labelledby="page-title">
+    <div class="article-heading">
+        <h1 id="page-title">Yamuna River — A Story of Decline and Hope</h1>
+        <p class="subtitle">An investigation into pollution, community response, and possible paths to restoration.</p>
+    </div>
+</section>
+
+n<main class="article-container">
+
+n    <p class="dropcap">
+        The Yamuna River, one of India’s holiest and most historically significant rivers, has long been a symbol of life, faith, and prosperity. Flowing across multiple states and nourishing millions, it is not just a waterbody — it is a lifeline. Yet today, the Yamuna is fighting for survival.
+    </p>
+
+n    <p>
+        The stretch of the Yamuna in Delhi, which is less than 2% of the river’s total length, shockingly contributes to nearly 76% of the total pollution load entering the river. This part of the river has transformed from a flowing freshwater source into a stagnant, black, frothy sewage canal.
+Every day, around 3,800 million litres of sewage and industrial waste enter the Yamuna. Eighteen major drains continuously dump untreated wastewater into it. Levels of ammonia, BOD (Biological Oxygen Demand), and nitrates often rise far beyond permissible limits, making the water unfit even for aquatic life.
+    </p>
+
+n    <p>
+        Saving the Yamuna is not just a project — it is a responsibility.
+Historically, civilisations flourished on riverbanks. If we allow the Yamuna to die, we lose not only an ecosystem but also a part of our identity.
+n    </p>
+
+n    <!-- MAP IMAGE -->
+    <img src="2.png"
+      class="article-img" alt="Yamuna river map area">
+
+n    <p>
+        Every drop saved, every drain treated, every citizen aware — takes us one step closer to restoring the river’s glory.
+    </p>
+nh2 class="sub-heading">The Ecological Crisis</h2>
+    <!-- SMALL RIGHT IMAGE -->
+    <img src="bg-poster.svg"
+      class="article-img-small" alt="Yamuna river">
+
+n      <p>
+        The consequences of this pollution are severe:
+
+nLoss of aquatic biodiversity: Fish populations have collapsed due to low dissolved oxygen.
+
+nEutrophication: High levels of phosphorus and nitrogen create dense algal blooms, blocking sunlight and suffocating water life.
+
+nHealth hazards: Polluted water increases the risk of skin infections, gastrointestinal diseases, and long-term toxic exposure.
+
+nImpact on agriculture: Contaminated water used for irrigation harms soil quality and crop health.
+
+nThe Yamuna’s condition reflects not just an environmental issue, but a social, cultural, and economic crisis that demands immediate attention.
+
+nWhy We Must Act Now:
+
+nSaving the Yamuna is not optional — it is essential.
+A polluted river impacts:
+
+nDrinking water supply for millions
+
+nLivelihoods of farmers and fishermen
+
+nReligious and cultural practices
+
+nThe health of the entire Ganga basin
+
+nIf action is delayed, reversing the damage will become nearly impossible. A dying river cannot support a thriving civilisation.
+n    </p>
+
+n<style>
+  .water-quality {
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+
+n  .quality-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    max-width: 1100px;
+    margin: auto;
+  }
+
+n  .quality-card {
+    padding: 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+  }
+
+n  .quality-card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .quality-card .value {
+    font-size: 30px;
+    margin: 5px 0;
+  }
+
+  .quality-card .status {
+    font-size: 16px;
+  }
+
+  /* COLOR CODES */
+  .good { background: #28a745; }      /* 🟢 Green */
+  .moderate { background: #ffc107; color: #333; } /* 🟡 Yellow */
+  .critical { background: #dc3545; }  /* 🔴 Red */
+</style>
+<!-- LEAFLET CSS + JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+n<!-- MAP SECTION -->
+<h2 style="text-align:center; font-family:Arial; margin-top:40px;">
+n  Interactive Map — 18 Drains from Wazirabad to Okhla
+</h2>
+
+n<div id="yamunaMap" style="height: 520px; margin: 20px auto; width:90%; border-radius:12px;"></div>
+
+n<script>
+  // Initialize Map
+  var map = L.map('yamunaMap').setView([28.67, 77.25], 12);
+
+  // Load OpenStreetMap Tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18
+  }).addTo(map);
+
+n
+  // Drain data (18 drains – sample coordinates & values)
+  const drains = [
+    { name: "Najafgarh Drain", lat: 28.62, lon: 77.12, status: "unsafe", bod: 45, nitrate: 60, updated: "5 min ago", pollutants:"Nitrates, Phosphates, Ammonia" },
+    { name: "Shahdara Drain", lat: 28.66, lon: 77.30, status: "unsafe", bod: 52, nitrate: 70, updated: "10 min ago", pollutants:"Industrial Waste, Foam" },
+    { name: "Barapullah Drain", lat: 28.58, lon: 77.24, status: "unsafe", bod: 38, nitrate: 50, updated: "8 min ago", pollutants:"Organic Waste" },
+    { name: "Minto Road Drain", lat: 28.64, lon: 77.22, status: "moderate", bod: 18, nitrate: 22, updated: "2 hrs ago", pollutants:"Sewage" },
+    { name: "Wazirabad Drain", lat: 28.71, lon: 77.23, status: "unsafe", bod: 48, nitrate: 65, updated: "1 hr ago", pollutants:"Fertilizers" },
+    { name: "Khyber Pass Drain", lat: 28.68, lon: 77.21, status: "unsafe", bod: 40, nitrate: 54, updated: "42 min ago", pollutants:"Heavy Metals" },
+    { name: "Kingsway Camp Drain", lat: 28.69, lon: 77.19, status: "moderate", bod: 20, nitrate: 26, updated: "3 hrs ago", pollutants:"Domestic Waste" },
+    { name: "Qudsia Bagh Drain", lat: 28.67, lon: 77.23, status: "unsafe", bod: 36, nitrate: 48, updated: "30 min ago", pollutants:"Froth, Ammonia" },
+    { name: "Civil Lines Drain", lat: 28.68, lon: 77.23, status: "safe", bod: 8, nitrate: 10, updated: "Today", pollutants:"Low Pollution" },
+    { name: "ISBT Drain", lat: 28.66, lon: 77.23, status: "moderate", bod: 25, nitrate: 32, updated: "2 hrs ago", pollutants:"Organic Load" },
+    { name: "Rajghat Drain", lat: 28.64, lon: 77.24, status: "unsafe", bod: 50, nitrate: 68, updated: "12 min ago", pollutants:"Foam, Sewage" },
+    { name: "ITO Drain", lat: 28.63, lon: 77.25, status: "unsafe", bod: 42, nitrate: 55, updated: "10 min ago", pollutants:"Industrial Waste" },
+    { name: "Sarita Vihar Drain", lat: 28.52, lon: 77.30, status: "moderate", bod: 18, nitrate: 20, updated: "4 hrs ago", pollutants:"Sewage Mix" },
+    { name: "Sonia Vihar Drain", lat: 28.71, lon: 77.28, status: "unsafe", bod: 46, nitrate: 59, updated: "20 min ago", pollutants:"Runoff Waste" },
+    { name: "Jagatpur Drain", lat: 28.73, lon: 77.25, status: "unsafe", bod: 49, nitrate: 66, updated: "25 min ago", pollutants:"Agricultural Chemicals" },
+    { name: "Okhla Drain 1", lat: 28.52, lon: 77.29, status: "unsafe", bod: 55, nitrate: 72, updated: "Just now", pollutants:"High Nitrates" },
+    { name: "Okhla Drain 2", lat: 28.51, lon: 77.29, status: "unsafe", bod: 60, nitrate: 80, updated: "1 min ago", pollutants:"Toxic Metals" },
+    { name: "Okhla Drain 3", lat: 28.50, lon: 77.29, status: "unsafe", bod: 62, nitrate: 85, updated: "2 min ago", pollutants:"High Foam, Chemicals" }
+  ];
+
+n  // Marker Colors Based On Status
+  function getColor(status) {
+    if (status === "safe") return "green";
+    if (status === "moderate") return "orange";
+    return "red"; // unsafe
+  }
+
+n  // Add markers
+  drains.forEach(d => {
+    L.circleMarker([d.lat, d.lon], {
+      radius: 10,
+      fillColor: getColor(d.status),
+      color: "#000",
+      weight: 1,
+      fillOpacity: 0.8
+    })
+    .addTo(map)
+    .bindPopup(
+      "<b>" + d.name + "</b><br/>" +
+      "Status: " + d.status.toUpperCase() + "<br/>" +
+      "BOD: " + d.bod + " mg/L<br/>" +
+      "Nitrate: " + d.nitrate + " mg/L<br/>" +
+      "Top Pollutants: " + d.pollutants + "<br/>" +
+      "<i>Last Updated: " + d.updated + "</i>"
+    );
+  });
+</script>
+<h2 class="sub-heading">Conclusion</h2>
+<p>
+n        The Yamuna River cries for help. Its froth is not just pollution — it is a warning. Its blackened water is not just sewage — it is a reflection of our neglect.
+
+nIf we act today, the Yamuna can still breathe again.
+If we delay, the cost will be irreversible.
+
+nSaving the Yamuna River is saving our future.
+    </p>
+</main>
+
+n<a href="#" class="back-to-top">↑ BACK TO TOP</a>
+
+n</body>
+</html>

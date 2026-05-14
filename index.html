@@ -1,0 +1,834 @@
+<!doctype html>
+<!-- particle canvas and script will be inserted at end of document to avoid breaking the prolog -->
+<html lang="en" data-lowperf="1">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SkyCool™ Flux Pods — Active Thermal Management & Urban Cooling</title>
+<meta name="description" content="SkyCool Flux Pods — Modular, AI-driven systems that actively manage thermal energy and harvest power for self-sufficient rooftop cooling." />
+<style>
+  :root {
+  /* Blue theme requested: deep/navy -> cerulean accents */
+  --bg: #071B2A; /* deep navy background */
+  --card: #0B3A57; /* card surface (slightly lighter) */
+  --accent: #3FA6FF; /* bright cerulean accent */
+  --accent-2: #7FD1FF; /* pale sky highlight */
+  --text-dark: #E6F7FF; /* light text for contrast on dark bg */
+  --muted: #BFDFF6; /* muted copy */
+  --nav-text: #E6F7FF; /* nav link color */
+  --maxw: 1360px;
+  --ease: cubic-bezier(.16, .84, .24, 1);
+  --nav-h: 60px;
+  --radius: 16px;
+}
+
+  @keyframes minimalGradient {
+     0% { background-position: 0% 50%; }
+     20% { background-position: 40% 60%; }
+     40% { background-position: 100% 80%; }
+     60% { background-position: 60% 100%; }
+     80% { background-position: 20% 40%; }
+     100% { background-position: 0% 50%; }
+  }
+
+  /* subtle animated background shift so the yellow gradient feels alive but not distracting */
+  @keyframes bgShift {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+
+  html,body{
+    min-height:100%;
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--text-dark);
+  /* Make background a clean white gradient (keeps other overlay planes but sets base to white) */
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+  background-size: 300% 300%;
+  /* much slower background drift to keep base color uniform and non-jumpy */
+  animation: bgShift 60s ease-in-out infinite;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* animated background plane: GPU-friendly multi-stop gradient layer with parallax support */
+  :root{ --gx: 50%; --gy: 40%; --plane-x: 0px; --plane-y: 0px; }
+  :root{ --overlay-opacity: 0.98; }
+  /* Base blurred plane (big & soft) to hide hard edges and create depth */
+  body::before{
+    content: '';
+    position: fixed;
+    left: -30%; top: -30%; width: 160%; height: 160%;
+    pointer-events: none;
+    z-index: -1; /* sits above video (-2) and below the sharp overlay (0) */
+  will-change: transform, opacity;
+  /* hint to browser to promote this element to its own composite layer */
+  -webkit-transform: translateZ(0);
+    background-size: 220% 220%;
+  background-image: radial-gradient(closest-side at 12% 18%, rgb(255, 255, 255), transparent 28%),
+            radial-gradient(closest-side at 82% 8%, rgb(255, 255, 255), transparent 26%),
+            radial-gradient(closest-side at 52% 78%, rgb(255, 255, 255), transparent 28%),
+            linear-gradient(120deg, rgb(255, 255, 255), rgba(255,90,160,0.10));
+    background-blend-mode: screen, screen, screen, overlay;
+  transform: translate3d(var(--plane-x), var(--plane-y), 0) rotate(-10deg) scale(1.12);
+  opacity: 1;
+  filter: blur(2px) saturate(1.02);
+  will-change: transform, opacity, filter;
+    /* gentle top fade so the plane doesn't dominate the hero; smooth gradient to avoid hard edges */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0.08) 22%, rgba(0,0,0,0.6) 56%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0.08) 22%, rgba(0,0,0,0.6) 56%, rgba(0,0,0,1) 100%);
+  /* motion driven by RAF-controlled CSS variables for smoother, deterministic motion */
+  animation: none !important;
+  }
+  /* Sharp overlay plane to make the colors pop and provide definition (no blur) */
+  body::after{
+    content: '';
+    position: fixed;
+    left: -30%; top: -30%; width: 160%; height: 160%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  -webkit-transform: translateZ(0);
+  z-index: 0; /* above the blurred base, below content */
+  background-size: 180% 180%;
+  background-image: radial-gradient(closest-side at 14% 18%, rgba(63,166,255,0.28), transparent 26%),
+            radial-gradient(closest-side at 78% 8%, rgba(127,209,255,0.22), transparent 24%),
+            radial-gradient(closest-side at 50% 78%, rgba(63,90,255,0.12), transparent 26%),
+            linear-gradient(120deg, rgba(120,70,230,0.10), rgba(255,90,160,0.06));
+    background-blend-mode: screen, screen, screen, overlay;
+    transform: translate3d(var(--plane-x), var(--plane-y), 0) rotate(-10deg) scale(1.04);
+  opacity: var(--overlay-opacity);
+    /* match the top fade so the overlay also starts below the hero, but smoother */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.7) 58%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.7) 58%, rgba(0,0,0,1) 100%);
+    /* motion driven by RAF-controlled CSS variables for smoother, deterministic motion */
+    animation: none !important;
+    /* minor overlay composite hint */
+    will-change: transform, opacity;
+  }
+  @keyframes planeFloat {
+    0%{ transform: translate3d(var(--plane-x), calc(var(--plane-y) * 0.9),0) rotate(-6deg) scale(1.02)}
+    15%{ transform: translate3d(calc(var(--plane-x) * 1.1), calc(var(--plane-y) * 0.95),0) rotate(-5.2deg) scale(1.08)}
+    30%{ transform: translate3d(calc(var(--plane-x) * -0.65), calc(var(--plane-y) * -0.5),0) rotate(-6.4deg) scale(1.03)}
+    55%{ transform: translate3d(calc(var(--plane-x) * 0.9), calc(var(--plane-y) * 0.6),0) rotate(-7deg) scale(1.1)}
+    80%{ transform: translate3d(calc(var(--plane-x) * -0.35), calc(var(--plane-y) * -0.28),0) rotate(-6deg) scale(1.05)}
+    100%{ transform: translate3d(var(--plane-x), var(--plane-y),0) rotate(-6deg) scale(1.02)}
+  }
+  /* keep a light morph for large screens but disable heavy filter animations on small screens */
+  @media (prefers-reduced-motion: reduce), (max-width:900px) {
+    body::after { animation: planeFloat 22s cubic-bezier(.25,.1,.25,1) infinite !important; filter:none !important; }
+  }
+
+  /* Respect reduced motion: pause heavy plane animations */
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none !important; transform: translate3d(0,0,0) rotate(-6deg) scale(1.02) !important; }
+  }
+
+  /* Aggressive low-performance mode (toggled at runtime) */
+  html[data-lowperf="1"] body::before { display: none !important; }
+  html[data-lowperf="1"] body::after { opacity: 0.28 !important; animation: none !important; filter: none !important; }
+  html[data-lowperf="1"] .liquid-glass { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 10px 26px rgba(0,0,0,0.45) !important; }
+  /* Additional low-perf CSS overrides: remove heavy filters and large shadows */
+  html[data-lowperf="1"] .liquid-glass, html[data-lowperf="1"] .card-inner { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 6px 14px rgba(0,0,0,0.08) !important; }
+  html[data-lowperf="1"] .cta, html[data-lowperf="1"] .cta-ghost { box-shadow: none !important; }
+  html[data-lowperf="1"] .cta { box-shadow: 0 10px 26px rgba(0,0,0,0.28) !important; }
+  html[data-lowperf="1"] .svg-container:hover svg { filter: none !important; transform: none !important; }
+  html[data-lowperf="1"] .node-breath, html[data-lowperf="1"] .card-entrance.visible { animation: none !important; }
+  html[data-lowperf="1"] .nav-item-link:hover { transform: none !important; }
+
+  /* microanimations: small float and pulse for subtle life */
+  @keyframes float-slow { 0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)} }
+  @keyframes pulse-soft { 0%{transform:scale(1);opacity:0.95}50%{transform:scale(1.02);opacity:1}100%{transform:scale(1);opacity:0.95} }
+  .float { animation: float-slow 6.8s ease-in-out infinite; }
+  .pulse { animation: pulse-soft 3.4s ease-in-out infinite; }
+  /* Disable continuous particle/node breathing animations by default to save CPU/GPU */
+  .particle, .node-breath { animation: none !important; }
+
+  /* avoid stacking tints: ensure only one translucent layer applies */
+  .liquid-glass, #bg-video, .video-tint, #bg-video-wrap::after { isolation:isolate; }
+  .liquid-glass::before { content: ''; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: normal; }
+
+  .nav-item-link{color:inherit;text-decoration:none; display: block;}
+  .cta, .cta-ghost{text-decoration: none;}
+  .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative;z-index:2}
+  /* small helper link shown beneath videos/images so users can open the raw file directly */
+  .media-link{ text-align:center; margin-top:8px; font-size:0.95rem; }
+  .media-link a{ color:var(--muted); text-decoration:underline; }
+  *{box-sizing:border-box}
+  section{padding: 80px 0;}
+  hr{border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 60px 0;}
+
+  /* full-bleed solid header (not transparent) */
+  header.sticky{position:fixed;left:0;right:0;top:0;z-index:140;background-color:var(--card); border-bottom:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(6px) saturate(1.03);}
+  header.sticky .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding: 16px 0;gap:18px}
+  .brand{display:flex;gap:12px;align-items:center}
+  /* logo will now be an inline image file (use a transparent PNG/SVG named 'skycool-logo.png' next to this HTML) */
+  /* Slightly larger visible logo while preserving the header layout */
+  .logo{width:48px;height:48px;border-radius:8px;box-shadow:0 0 10px rgba(127,209,255,0.12);flex:0 0 48px;object-fit:contain;background:transparent;display:block}
+  .brand-title h1{font-size:22px;margin:0;color:var(--text-dark)}
+
+  nav.nav{position:relative;}
+  .nav-list{display:flex;gap:22px;align-items:center}
+  .nav-item-link{position:relative;padding:10px 6px;border-radius:8px;color:var(--nav-text);font-weight:700;font-size:15px;transition:all .18s var(--ease);}
+  .nav-item-link:hover{color:var(--accent-2);transform:translateY(-2px);background:rgba(255,255,255,0.02);}
+  .nav-item-link.active{color:var(--accent);}
+  .nav-item-link.active::after {content: ''; position: absolute; bottom: -8px; left: 10%; width: 80%; height: 3px; border-radius:6px; background: linear-gradient(90deg,var(--accent),var(--accent-2)); box-shadow: 0 8px 20px rgba(63,166,255,0.12);}
+
+  .hero{padding: 120px 0 40px 0; text-align: center; position:relative; overflow:hidden;}
+  /* subtle hero-bottom fade so the video blends into the HR/divider */
+  .hero::after{ display:none }
+  .hero h2{font-size:5rem;margin:0;line-height:1.0;color:var(--text-dark)}
+  .hero p{color:var(--muted);margin:24px auto 40px auto;font-size:1.4rem;max-width: 900px;}
+  .eyebrow{color:var(--accent);font-weight:800;font-size:1rem;margin-bottom:12px;letter-spacing:2px;text-transform: uppercase;}
+  .cta-row{display:flex;gap:16px;align-items:center; justify-content: center;}
+  .cta, .cta-ghost{padding:14px 36px;border-radius:calc(var(--radius) + 4px);font-weight:800;border:0;cursor:pointer;transition:transform .25s var(--ease), box-shadow .25s var(--ease);}
+  .cta{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:var(--text-dark);box-shadow:0 18px 48px rgba(3,22,30,0.56);transform:translateZ(0);font-size:1.02rem;padding:16px 40px;} 
+  /* ML visualization button: subtle rise + tinted glow, no full-square overlay */
+  #ml-btn{ animation: none; }
+  #ml-btn:hover{ transform: translateY(-6px); }
+  /* removed the faint pseudo-element behind the ML button that looked like a low-opacity box */
+  #ml-btn::before{ display:none }
+  .cta:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 26px 80px rgba(11,42,52,0.18);} 
+  .cta:active{transform:translateY(-2px) scale(0.995);} 
+  .cta:focus{outline:none;box-shadow:0 0 0 4px rgba(127,209,255,0.12), 0 18px 50px rgba(0,0,0,0.18)}
+  .cta-ghost{background:transparent;border:2px solid rgba(255,255,255,0.12);color:var(--text-dark);font-weight:600;}
+  .cta-ghost:hover{transform:translateY(-2px);border-color:var(--accent);}
+
+  .liquid-glass {
+    /* stronger, uniform blue-tinted glass surface that sits above the animated gradient
+       Use a semi-opaque base color to guarantee legible text and consistent appearance across backgrounds */
+    background: rgba(10,28,38,0.36); /* solid-ish layer to hold content legibly */
+    border: 1px solid rgba(127,209,255,0.06);
+    color: var(--text-dark);
+    border-radius: 18px;
+    padding: 24px;
+    backdrop-filter: blur(6px) saturate(1.02) brightness(1.02);
+    -webkit-backdrop-filter: blur(6px) saturate(1.02) brightness(1.02);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.02);
+    transition: background 0.45s var(--ease), box-shadow 0.45s var(--ease), transform 0.28s var(--ease);
+    will-change: transform, box-shadow;
+    position: relative; z-index: 8; /* ensure content and text sit clearly above background plane */
+  }
+  /* keyboard focus visible for liquid-glass panels */
+  .liquid-glass:focus{ outline: none; box-shadow: 0 28px 80px rgba(0,0,0,0.5), 0 0 0 4px rgba(255,220,204,0.12); transform: translateY(-6px) scale(1.01); }
+  .liquid-glass:hover{ transform: translateY(-6px) scale(1.01); }
+  .liquid-glass p, .liquid-glass strong, .liquid-glass em {
+  color: var(--text-dark);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.10);
+  }
+
+  .section-header{text-align: center; margin-bottom: 60px;}
+  .section-header h3{font-size: 2.5rem; margin: 0; color: var(--text-dark);}
+  .section-header p{color: var(--muted); font-size: 1.1rem; max-width: 700px; margin: 10px auto 0;}
+  .grid-2{display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;}
+  .grid-3{display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;}
+  .card{background-color: transparent; padding: 30px; border-radius: var(--radius); border: none;}
+  .card .card-inner{ /* use liquid-glass look by default; avoid forcing dark with !important */ padding: 20px; border-radius: 12px; }
+  .card h4{color: var(--accent); font-size: 1.5rem; margin: 0 0 10px 0;}
+  .card p{color: var(--muted); font-size: 1rem;}
+  .svg-container{background-color: transparent; padding: 12px; border-radius: calc(var(--radius) - 6px); min-height: 160px; display: flex; align-items: center; justify-content: center;}
+  /* subtle elevation for embedded svgs so tiles read as surfaces */
+  .svg-container svg{transition: transform .35s var(--ease), filter .35s var(--ease); transform-origin:center;}
+  .svg-container:hover svg{transform: translateY(-6px) scale(1.01); filter:drop-shadow(0 20px 40px rgba(0,0,0,0.36));}
+  .svg-container text{font-family:inherit;fill:var(--text-dark)}
+
+  /* Hero video styling: full-viewport background video (behind content) */
+  /* Background video (full-viewport, behind all content) */
+  #bg-video-wrap{position:fixed;left:0;top:0;width:100vw;height:100vh;overflow:hidden;z-index:-2;pointer-events:none}
+  /* Restore a robust top-to-bottom mask so the video remains fully visible at the top and fades to transparent at the bottom.
+     This avoids desaturation or weird overlay blending that made the video look broken. Keep filter:none to avoid sharpening artifacts. */
+  #bg-video{width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:1;filter: none;will-change:transform;transform:translateZ(0);
+    -webkit-mask-image: linear-gradient(to bottom, rgb(11, 79, 99) 0%, rgb(11, 79, 99) 36%, rgb(11, 79, 99) 64%, rgb(11, 79, 99) 86%, rgb(11, 79, 99) 100%);
+    mask-image: linear-gradient(to bottom, rgb(11, 79, 99) 0%, rgb(11, 79, 99) 36%, rgb(11, 79, 99) 64%, rgb(11, 79, 99) 86%, rgb(11, 79, 99) 100%);
+  }
+  /* ensure page content sits above the background video and above the plane pseudo-element */
+  body > *:not(#bg-video-wrap){position:relative;z-index:2}
+  /* make the hr overlap the hero bottom so the video appears to merge with the line */
+  hr{display:none}
+
+  @keyframes heat-move { 0% {transform: translateX(0)} 50% {transform: translateX(120px)} 100% {transform: translateX(0)} }
+  @keyframes flow { 0% {stroke-dashoffset: 0} 50% {stroke-dashoffset: -40} 100% {stroke-dashoffset: 0} }
+
+  .hot-block {animation: heat-move 6s var(--ease) infinite;transform-origin: 50% 50%;}
+  .liquid-pipe {stroke: var(--accent-2);stroke-width: 8;stroke-linecap: round;fill: none;opacity: 0.9;}
+  .liquid-flow {stroke-dasharray: 12 8;animation: flow 2s linear infinite;stroke: var(--accent-2);}
+
+  /* scroll-to-reveal: start hidden, transition into place when observed */
+  .reveal { opacity: 0; transform: translateY(10px); transition: opacity .6s var(--ease), transform .6s var(--ease); will-change: opacity, transform; }
+  .reveal.revealed { opacity: 1; transform: none; }
+
+  footer{padding: 40px 0; text-align: center; color: var(--muted); font-size: 0.9rem;}
+  @media (max-width: 1000px) {.hero h2{font-size:3.5rem;}.grid-2{grid-template-columns: 1fr;}.grid-3{grid-template-columns: 1fr;}.wrap{padding: 0 20px;}}
+  /* Particle animations for TEG SVG (moved here from inline SVG for broader compatibility) */
+  .particle{ transform-box: fill-box; transform-origin: center; }
+  .r1{ animation: move-red 1.2s cubic-bezier(.2,.8,.2,1) infinite; }
+  .r2{ animation: move-red2 1.6s cubic-bezier(.2,.8,.2,1) infinite 0.12s; }
+  .b1{ animation: move-blue 0.9s linear infinite; }
+  .b2{ animation: move-blue2 1.1s linear infinite 0.15s; }
+
+  /* Local SVG particle animations (explicit travel across box gaps) */
+  /* hot particle (peach) approaches TEG and fades early; cool particle moves further toward COOL */
+  @keyframes move-red{ 0%{transform: translate(0,0) scale(1);opacity:1} 40%{transform: translate(20px,0) scale(0.98);opacity:0.92} 72%{transform: translate(30px,0) scale(0.9);opacity:0.56} 92%{transform: translate(34px,0) scale(0.86);opacity:0.14} 100%{transform: translate(36px,0) scale(0.84);opacity:0} }
+  @keyframes move-red2{ 0%{transform: translate(0,0) scale(1);opacity:1} 45%{transform: translate(24px,6px) scale(0.98);opacity:0.92} 75%{transform: translate(34px,8px) scale(0.9);opacity:0.56} 95%{transform: translate(36px,8px) scale(0.86);opacity:0.12} 100%{transform: translate(36px,8px) scale(0.84);opacity:0} }
+  @keyframes move-blue{ 0%{transform: translate(0,0) scale(1);opacity:1} 55%{transform: translate(46px,0) scale(0.86);opacity:0.96} 85%{transform: translate(64px,0) scale(0.6);opacity:0.6} 100%{transform: translate(72px,0) scale(0.48);opacity:0} }
+  @keyframes move-blue2{ 0%{transform: translate(0,0) scale(1);opacity:1} 55%{transform: translate(46px,-6px) scale(0.86);opacity:0.96} 85%{transform: translate(64px,-6px) scale(0.6);opacity:0.6} 100%{transform: translate(72px,-6px) scale(0.48);opacity:0} }
+
+  /* Network nodes for AI schematic */
+  .net-node{ fill:var(--accent); opacity:0.95; }
+  .net-link{ stroke:#3b2a14; stroke-width:1.2; opacity:0.9 }
+  @keyframes node-pulse{ 0%{transform:scale(1);opacity:0.9}50%{transform:scale(1.18);opacity:1}100%{transform:scale(1);opacity:0.9} }
+  .net-node.pulse{ transform-origin:center; animation: node-pulse 2.4s ease-in-out infinite; }
+  /* hint to browser that net-node will animate */
+  .net-node{ will-change: transform, opacity; }
+
+  /* Dramatic site-wide 'wow' animations */
+  body{perspective:1200px}
+  .card-inner{transition:transform .6s cubic-bezier(.2,.9,.25,1), box-shadow .6s}
+  .card-inner:hover{transform:none; box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+  /* CTA glow ring */
+  .cta{position:relative;overflow:visible}
+  /* CTA glow ring reduced to subtle halo (not full-square coverage) */
+  .cta::after{content:'';position:absolute;left:50%;top:50%;width:120%;height:120%;transform:translate(-50%,-50%);border-radius:18px;background:radial-gradient(ellipse at center, rgba(127,209,255,0.12), rgba(127,209,255,0));opacity:0;transition:opacity .25s;z-index:-2}
+  .cta:hover::after{opacity:1}
+
+  /* small, site-wide microanimations */
+  .node-breath { animation: node-pulse 2.6s ease-in-out infinite; }
+  .card-entrance { transform: translateY(16px) scale(0.995); opacity:0; transition: transform .7s var(--ease), opacity .6s var(--ease); }
+  .card-entrance.visible { transform: none; opacity:1; }
+
+  /* Showcase 3D area */
+  .showcase{display:flex;gap:36px;align-items:center;padding:80px 0;}
+  .showcase-canvas{width:56%;height:420px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:18px;box-shadow:0 18px 48px rgba(0,0,0,0.45);overflow:hidden;position:relative}
+  .showcase-info{width:40%;}
+  .showcase-info .blurb{transition:opacity .42s var(--ease), transform .42s var(--ease); will-change:opacity, transform}
+  .showcase-info .blurb p{color:var(--muted);margin:0}
+  .showcase-info h3{font-size:2rem;margin:0 0 10px}
+  .showcase-info p{color:var(--muted);margin:0 0 16px}
+  /* fake 3D model element */
+  .model-3d{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateZ(0);width:420px;height:320px;background:linear-gradient(135deg,#0b2a34,#07202a);border-radius:18px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.06);font-weight:800;font-size:64px;mix-blend-mode:screen}
+  .model-reflection{position:absolute;left:0;right:0;bottom:0;height:60px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+
+  /* Parallax transforms (will be updated by JS) */
+  .model-3d[data-x]{transform:translate(calc(-50% + var(--mx,0px)), -50%) rotateY(calc(var(--rot,0deg)));}
+
+  @media (max-width:900px){.showcase{flex-direction:column}.showcase-canvas{width:100%;height:280px}.showcase-info{width:100%}}
+  /* dev badge removed in production edits */
+  /* Ensure the page fills the viewport and footer doesn't leave extra space.
+     Use a wrapper-based min-height so we avoid changing global body layout or text rendering. */
+  html, body { height: 100%; }
+  body { min-height: 100%; }
+  body > .wrap { min-height: 100%; display: flex; flex-direction: column; }
+  body > .wrap > main { flex: 1 0 auto; display: flex; flex-direction: column; }
+  /* ensure footer itself doesn't introduce unexpected bottom margin */
+  footer { margin: 0; }
+</style>
+</head>
+<body>
+  <!-- (removed forced low-perf) -->
+   
+  </script>
+  <!-- Full-viewport background video (edge-to-edge) -->
+  <div id="bg-video-wrap" aria-hidden="true">
+    <!-- removed inline SVG sharpen filter (caused color/clarity artifacts) -->
+  <video id="bg-video" playsinline muted loop preload="metadata" poster="bg-poster.svg" style="background: linear-gradient(180deg, #624200, #3f2700);">
+  <source src="14705140_1920_1080_30fps.mp4" type="video/mp4">
+      <!-- Fallback text for very old browsers -->
+      Your browser does not support the video tag.
+  </video>
+  <p class="media-link"><a href="14705140_1920_1080_30fps.mp4" target="_blank" rel="noopener">Open background video (raw file)</a></p>
+  </div>
+
+  <header class="sticky" aria-label="Site header">
+    <div class="topbar wrap">
+      <div class="brand">
+        <!-- Simple logo image: edit this filename to match your PNG in the same folder -->
+  <img class="logo" src="2.png" alt="SkyCool logo" />
+        <div class="brand-title">
+          <h1>Clean Energy And Sustainable Innovations For A Greener Future </h1>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Primary navigation">
+        <div class="nav-list" role="navigation">
+          <a href="index.html" class="nav-item-link active">Home</a>
+          <a href="feg.html" class="nav-item-link">About Us</a>
+          <a href="anish.html" class="nav-item-link">Eco DNA Scanner</a>
+          <!-- Quick link to Bioreactor Digital Twin (confirmation before navigating) -->
+          <a href="d.html" class="nav-item-link" style="background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:8px 14px;border-radius:10px;color:var(--card);box-shadow:0 12px 36px rgba(63,166,255,0.12);">Join Us</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Visuals toggle (accessible) - small control to re-enable heavier visuals if desired -->
+
+
+  <div class="wrap">
+
+        <main>
+      <section class="hero">
+
+        <div class="reveal" style="position:relative;z-index:2;">
+          <h2>The Future of Rooftop Thermal Management.</h2>
+        </div>
+        <div class="liquid-glass reveal" style="max-width:920px;margin:18px auto 28px;">
+          <p style="margin:0;font-size:1.1rem;color:var(--muted)">The SkyCool Flux Pod is an <strong>Intelligent Thermal Battery</strong> engineered first and foremost to <strong>cool urban environments</strong>. Using high-latent <strong>Phase Change Material (PCM)</strong> microfluidics to redistribute heat away from urban hotspots, the system reduces rooftop surface temperatures and lowers building HVAC demand. Integrated thermoelectric modules are used selectively to enable <em>energy-autonomous functions</em> — powering micro-pumps, sensors and an auto-clean cycle — while the overall mission remains localized cooling and heat extraction from dense cityscapes.</p>
+        </div>
+
+        <div class="cta-row reveal">
+                    <button id="ml-btn" class="cta" onclick="window.location.href='pls.html'" aria-label="Start Harvester Demo">Prototype</button>
+                    <button class="cta-ghost" onclick="window.location.href='HTT.html'" aria-label="Explore Article">Explore Article</button>
+        </div>
+  </section>
+
+  <!-- SNAPSHOT STATS SECTION -->
+<section class="stats-section">
+  <h2 class="stats-title">Snapshot Stats: Renewable Energy</h2>
+
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">☀️</div>
+      <span class="stat-number" data-target="+18%">+18%</span>
+      <p class="stat-label">Increase in renewable energy adoption today</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🌍</div>
+      <span class="stat-number" data-target="-32%">-32%</span>
+      <p class="stat-label">Estimated emission reduction through clean energy</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">⚡</div>
+      <span class="stat-number" data-target="24/7">24/7</span>
+      <p class="stat-label">Efficient power distribution using smart grids</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🔋</div>
+      <span class="stat-number" data-target="92%">92%</span>
+      <p class="stat-label">Improved battery efficiency in renewable systems</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🚗</div>
+      <span class="stat-number" data-target="1.5M+">1.5M+</span>
+      <p class="stat-label">Electric vehicles reducing fossil fuel dependency</p>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🌱</div>
+      <span class="stat-number" data-target="Net Zero">Net Zero</span>
+      <p class="stat-label">Global movement toward carbon-neutral future</p>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .stats-section {
+    padding: 60px 20px;
+    /* Dark-blue snapshot background */
+    background: linear-gradient(180deg, #072233 0%, #083a4a 100%);
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: #e6f7ff;
+  }
+
+  .stats-title {
+    font-size: 32px;
+    margin-bottom: 40px;
+    color: #e6f7ff;
+    font-weight: 700;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    width: min(100%, 1100px);
+    margin: 0 auto;
+    justify-items: center;
+  }
+
+  .stat-card {
+    background: linear-gradient(180deg, rgba(4,34,54,0.95), rgba(6,50,70,0.98));
+    padding: 25px 20px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(2,18,30,0.45);
+    transition: transform 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .stat-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .stat-number {
+    font-size: 42px;
+    font-weight: 800;
+    color: #7FD1FF;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .stat-label {
+    font-size: 16px;
+    color: #dfefff;
+  }
+</style>
+
+<script>
+  // Counter Animation
+  const counters = document.querySelectorAll('.stat-number');
+  const speed = 100;
+
+  counters.forEach(counter => {
+    const targetStr = counter.getAttribute('data-target');
+    const target = parseFloat(targetStr.replace(/[^\d.-]/g, ''));
+
+    if (isNaN(target) || !targetStr.includes('%')) {
+      // Non-numeric or non-percentage target, just set the text
+      counter.innerText = targetStr;
+    } else {
+      // Percentage target, animate
+      const sign = targetStr.startsWith('-') ? '-' : (targetStr.startsWith('+') ? '+' : '');
+      const numTarget = Math.abs(target);
+      const updateCounter = () => {
+        const count = +counter.innerText.replace(/[^\d.-]/g, '');
+
+        const increment = numTarget / speed;
+
+        if (count < numTarget) {
+          counter.innerText = sign + Math.ceil(count + increment) + '%';
+          setTimeout(updateCounter, 25);
+        } else {
+          counter.innerText = targetStr;
+        }
+      };
+
+      updateCounter();
+    }
+  });
+</script>
+<section style="padding:60px 20px; font-family:Inter, sans-serif;">
+  <div style="max-width:1200px; margin:auto; display:grid; grid-template-columns:1fr 2fr; gap:40px;">
+    
+    <!-- LEFT SIDE -->
+    <div>
+      <h2 style="font-size:42px; font-weight:800; margin:0; color:#0a2a1f;">
+        Our Goals for<br>2035
+      </h2>
+
+      <p style="margin-top:20px; line-height:1.6; color:#2c3e3a;">
+        Building futuristic technologies that transform atmospheric resources into sustainable water, clean energy, and healthier environments for future smart cities.
+      </p>
+
+    </div>
+
+    <!-- RIGHT SIDE GRID -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px;">
+
+      <!-- GOAL ITEM -->
+      <div>
+        <h3 style="font-size:38px; color:#0a2a1f; margin:0;">💧3BL</h3>
+        <p style="line-height:1.5; color:#364b44;">
+          Atmospheric Water Generation-
+Generate and purify over 3 billion liters of clean water annually through advanced atmospheric harvesting and moisture-capture systems designed for future sustainable cities.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size:38px; color:#0a2a1f; margin:0;">🌫100M</h3>
+        <p style="line-height:1.5; color:#364b44;">
+          Cleaner Air for Communities-
+Improve air quality and protect over 100 million people from pollution-related health risks using intelligent filtration and environmental purification technologies.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size:38px; color:#0a2a1f; margin:0;">⚡650K</h3>
+        <p style="line-height:1.5; color:#364b44;">
+          Smart Renewable Energy Systems-
+Deploy more than 650,000 futuristic clean-energy units capable of generating sustainable electricity with zero harmful emissions.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size:38px; color:#0a2a1f; margin:0;">🌱45M</h3>
+        <p style="line-height:1.5; color:#364b44;">
+          Sustainable Future Communities-
+Empower over 45 million citizens to adopt self-sustaining technologies for water conservation, renewable energy, and climate resilience.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size:38px; color:#0a2a1f; margin:0;">🌳1M + 50K</h3>
+        <p style="line-height:1.5; color:#364b44;">
+          Ecological Restoration & Carbon Reduction-
+Support global climate restoration by integrating smart green infrastructure, carbon-reduction systems, and environmental recovery technologies.
+        </p>
+      </div>
+
+      <div>
+        <h3 style="font-size:38px; color:#0a2a1f; margin:0;">🌍4,000+</h3>
+        <p style="line-height:1.5; color:#364b44;">
+          Future Smart Sustainability Zones-
+Integrate Atmospheric Water & Energy Harvesters into smart cities, eco-buildings, remote regions, disaster relief systems, and future sustainable infrastructure worldwide.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+      <footer>
+        <div class="wrap">
+          <p>&copy; 2026 Clean Energy And Sustainable Innovations For A Greener Future — All rights reserved.</p>
+        </div>
+      </footer>
+
+    </main>
+  </div> <!-- .wrap -->
+
+  <script>
+    // Attach confirmation behavior to links with class 'confirm-link'
+    document.addEventListener('DOMContentLoaded', function(){
+      document.querySelectorAll('.confirm-link').forEach(function(el){
+        el.addEventListener('click', function(e){
+          e.preventDefault();
+          var msg = el.dataset.confirm || 'Proceed to the linked page?';
+          if (window.confirm(msg)) {
+            var href = el.dataset.href || el.getAttribute('href');
+            if (href && href !== '#') window.location.href = href;
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- Video background is used site-wide now; particle overlay removed per request -->
+  <script>
+  (() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // micro interactions re-enabled for subtle rise animations
+    document.querySelectorAll('.cta, .card-inner, .logo').forEach(el=>{
+      el.addEventListener('pointerenter', (e)=>{ if(prefersReduced) return; el.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-8px) scale(1.03)'}], {duration:260, fill:'forwards', easing:'cubic-bezier(.2,.9,.2,1)'}); });
+      el.addEventListener('pointerleave', (e)=>{ if(prefersReduced) return; el.animate([{transform:'translateY(-8px) scale(1.03)'},{transform:'translateY(0) scale(1)'}], {duration:240, fill:'forwards', easing:'cubic-bezier(.2,.9,.2,1)'}); });
+    });
+    // pointer-driven sheen for liquid-glass: responds to pointer position instead of auto-bobbing
+    document.querySelectorAll('.liquid-glass').forEach(el=>{
+      if(prefersReduced) return;
+      // store original background
+      const orig = getComputedStyle(el).background;
+      el.dataset._origBg = orig;
+      // make element keyboard-focusable for accessibility
+      if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      // ensure ARIA role is region for assistive tech context (non-interactive content)
+      if(!el.hasAttribute('role')) el.setAttribute('role', 'region');
+      el.addEventListener('pointermove', (ev)=>{
+        const r = el.getBoundingClientRect();
+        const x = Math.max(0, Math.min(100, ((ev.clientX - r.left)/r.width)*100));
+        const y = Math.max(0, Math.min(100, ((ev.clientY - r.top)/r.height)*100));
+        // subtle radial sheen layered over original background
+        el.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 30%), ${el.dataset._origBg}`;
+      });
+      el.addEventListener('pointerleave', ()=>{ el.style.background = el.dataset._origBg; });
+      // keyboard focus/blur handlers to show sheen for keyboard users
+      el.addEventListener('focus', (ev)=>{
+        // center sheen when focused (keyboard users)
+        el.style.background = `radial-gradient(circle at 50% 40%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 30%), ${el.dataset._origBg}`;
+      });
+      el.addEventListener('blur', (ev)=>{
+        el.style.background = el.dataset._origBg;
+      });
+      // allow Enter/Space to trigger a subtle lift and flash for keyboard activation
+      el.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter' || ev.key === ' '){
+          ev.preventDefault();
+          // small pressed animation
+          el.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-8px) scale(1.02)'},{transform:'translateY(0) scale(1)'}], {duration:380, easing:'cubic-bezier(.2,.9,.2,1)'});
+          // quick sheen pulse
+          const origBg = el.dataset._origBg;
+          el.style.background = `radial-gradient(circle at 50% 40%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 30%), ${origBg}`;
+          setTimeout(()=>{ el.style.background = origBg; }, 420);
+        }
+      });
+    });
+    const cta = document.querySelector('.cta'); if(cta){ setTimeout(()=>{ if(prefersReduced) return; cta.animate([{boxShadow:'0 10px 30px rgba(34,20,0,0.06)'},{boxShadow:'0 20px 60px rgba(34,20,0,0.16)'},{boxShadow:'0 10px 30px rgba(34,20,0,0.06)'}], {duration:1800, iterations:3}); }, 700); }
+    function shortenText(){ const heroH2 = document.querySelector('.hero h2'); if(heroH2) heroH2.textContent = 'Energy Reimagined'; const heroP = document.querySelector('.hero p'); if(heroP) heroP.textContent = '“Empowering the world through clean energy innovations and sustainable technologies to create a greener, healthier, and more sustainable future for generations to come.”'; document.querySelectorAll('.card p').forEach((p)=>{ p.textContent = p.textContent.split('.').slice(0,1).join('.') + '.'; }); }
+    shortenText();
+
+    // scroll reveal IntersectionObserver
+    const revealObserver = new IntersectionObserver((entries, obs)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){ 
+          en.target.classList.add('revealed'); 
+          // reveal once: stop observing so it doesn't toggle off when scrolled away
+          obs.unobserve(en.target);
+        }
+      });
+    }, { root: null, rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+      // staggered reveals for a nicer microanimation cadence
+      if(!prefersReduced){
+        const reveals = Array.from(document.querySelectorAll('.reveal'));
+        reveals.forEach((el,i)=>{ el.style.transitionDelay = (i * 80) + 'ms'; });
+      }
+  })();
+  </script>
+
+  <script>
+  // Hero video control: autoplay (muted) and pause when offscreen
+  (function(){
+  // Allow background video to play even in low-performance mode
+    const vid = document.getElementById('bg-video');
+    if(!vid) return;
+    function tryPlay(){ vid.play().catch(()=>{/* ignore */}); }
+    // try to autoplay after small delay
+    setTimeout(tryPlay, 400);
+    // pause when document not visible to save CPU/battery
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden){ try{ vid.pause(); }catch(e){} } else { tryPlay(); }
+    });
+    // also pause on window blur (optional)
+    window.addEventListener('blur', ()=>{ try{ vid.pause(); }catch(e){} });
+    // wire visuals toggle button: update label and aria-pressed
+    function initVisToggle(){
+      const btn = document.getElementById('vis-toggle');
+      if(!btn || !window.skyVisuals) return;
+      btn.textContent = window.skyVisuals.enabled ? 'Disable visuals' : 'Enable visuals';
+      btn.setAttribute('aria-pressed', window.skyVisuals.enabled ? 'true' : 'false');
+      btn.addEventListener('click', ()=>{ window.skyVisuals.toggle(); btn.setAttribute('aria-pressed', window.skyVisuals.enabled ? 'true' : 'false'); });
+    }
+    // attempt init soon after DOM is ready
+    if(document.readyState === 'complete' || document.readyState === 'interactive'){ setTimeout(initVisToggle, 80); } else { document.addEventListener('DOMContentLoaded', initVisToggle); }
+    window.addEventListener('focus', ()=>{ tryPlay(); });
+  })();
+  </script>
+
+  <script>
+  // Extra microanimations: CTA pulse, stagger card entrances, node breathing
+  (function(){
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Skip heavy microanimations when low-performance mode is enabled
+    if(document.documentElement.hasAttribute('data-lowperf') || prefersReduced) return;
+    // pulse CTA a few times to draw attention
+    const cta = document.querySelector('.cta');
+    if(cta){ cta.animate([{transform:'scale(1)'},{transform:'scale(1.03)'},{transform:'scale(1)'}], {duration:900, iterations:2, easing:'ease-in-out'}); }
+    // stagger card entrances
+    const cards = document.querySelectorAll('.card .card-inner');
+    cards.forEach((c, i)=>{
+      c.classList.add('card-entrance');
+      setTimeout(()=>{ c.classList.add('visible'); }, 200 + i * 160);
+    });
+    // add node breathing to network nodes
+    document.querySelectorAll('.net-node').forEach(n=>{ n.classList.add('node-breath'); });
+  })();
+  </script>
+
+  <script>
+  // Parallax gradient controller: updates CSS vars --gx and --gy based on scroll position
+  (function(){
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Skip parallax controller in low-performance mode
+    if(document.documentElement.hasAttribute('data-lowperf') || prefersReduced) return;
+    let ticking = false;
+    function update(){
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scroll = Math.max(0, Math.min(1, window.scrollY / (docHeight || 1)));
+      // map scroll (0..1) to gradient positions (20%..80%) for subtle parallax
+      const gx = 50; // keep horizontal centered
+      const gy = 40 + (scroll * 20); // move vertical focal point
+      document.documentElement.style.setProperty('--gx', gx + '%');
+      document.documentElement.style.setProperty('--gy', gy + '%');
+      ticking = false;
+    }
+    window.addEventListener('scroll', ()=>{ if(!ticking){ window.requestAnimationFrame(update); ticking = true; } }, { passive:true });
+    // also nudge on resize
+    window.addEventListener('resize', ()=>{ if(!ticking){ window.requestAnimationFrame(update); ticking = true; } });
+    // initial set
+    update();
+  })();
+  </script>
+
+  <script>
+    // dev-badge script removed alongside badge element
+  </script>
+
+  <!-- Background is intentionally stationary (no parallax) -->
+
+</body>
+<script>
+// Pointer-driven parallax for the background plane
+(function(){
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // Skip pointer-driven RAF loop when low-performance mode is enabled
+  if(document.documentElement.hasAttribute('data-lowperf')) return;
+  const root = document.documentElement;
+  // captured mouse (cheap) - updated by pointer events but not used directly to paint
+  let targetX = 0, targetY = 0;
+  // smoothed values used to set CSS vars
+  let smoothX = 0, smoothY = 0;
+  const smoothing = 0.28; // increase smoothing to reduce micro updates
+
+  // capture pointer position cheaply
+  window.addEventListener('pointermove', (e)=>{
+  targetX = (e.clientX / window.innerWidth - 0.5) * 18; // px space scaled (reduced for performance)
+  targetY = (e.clientY / window.innerHeight - 0.5) * 14; // px space scaled (reduced for performance)
+  }, {passive:true});
+
+  // idle float when no pointer movement
+  let idle = 0; let lastPointerEvent = performance.now();
+  window.addEventListener('pointermove', ()=> lastPointerEvent = performance.now(), {passive:true});
+
+  let lowPerf = false;
+  let frameToggle = 0;
+  const FRAME_WRITE_INTERVAL = 24; // update CSS vars once every 24 RAF frames to reduce layout thrash
+  function rafLoop(){
+    if(document.hidden){ requestAnimationFrame(rafLoop); return; }
+    // if pointer hasn't moved in ~2s, switch to idle float
+    if(performance.now() - lastPointerEvent > 2000){ idle += 0.016; targetX = Math.sin(idle * 0.5) * 6; targetY = Math.cos(idle * 0.35) * 4; }
+
+    // low-pass filter / smoothing
+    smoothX += (targetX - smoothX) * smoothing;
+    smoothY += (targetY - smoothY) * smoothing;
+    // write to CSS only every FRAME_WRITE_INTERVAL frames to reduce style updates
+    frameToggle = (frameToggle + 1) % FRAME_WRITE_INTERVAL;
+    if(!lowPerf || frameToggle === 0){
+      root.style.setProperty('--plane-x', smoothX.toFixed(2) + 'px');
+      root.style.setProperty('--plane-y', smoothY.toFixed(2) + 'px');
+    }
+    requestAnimationFrame(rafLoop);
+  }
+  requestAnimationFrame(rafLoop);
+  // FPS detector: if average FPS < 36 for several checks, enable low-performance mode
+  (function fpsWatch(){
+    let last = performance.now(); let frames = 0; let checks = 0; let lows = 0;
+    function tick(){
+      const now = performance.now(); frames++;
+      if(now - last >= 1000){
+        const fps = frames * 1000 / (now - last);
+        last = now; frames = 0; checks++;
+        if(fps < 36) lows++; else lows = Math.max(0, lows - 1);
+        if(lows >= 3 && !lowPerf){ lowPerf = true; document.documentElement.setAttribute('data-lowperf','1'); }
+        if(lows === 0 && lowPerf){ lowPerf = false; document.documentElement.removeAttribute('data-lowperf'); }
+        // continue watching; keep checks to adjust state
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+  // ensure RAF loop pauses/resumes cleanly on visibility changes
+  document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ lastPointerEvent = performance.now(); } });
+})();
+</script>
+</html>
+

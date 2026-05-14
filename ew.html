@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Circle Carousel Interface</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #fef9f0;
+    margin: 0;
+  }
+
+  .carousel-container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+
+  /* Circle */
+  .circle {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: #003b8a; /* blue background */
+    border: 5px solid #c19a4b; /* gold border */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+  }
+
+  .circle h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .circle p {
+    font-size: 16px;
+    margin-top: 15px;
+  }
+
+  .circle .icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+
+  /* Arrows */
+  .arrow {
+    font-size: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #003b8a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s;
+  }
+
+  .arrow:hover {
+    transform: scale(1.2);
+  }
+
+  /* Side labels */
+  .side-label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #000;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="carousel-container">
+  <div class="arrow" id="prev">&#8592;</div>
+
+  <div class="circle">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Origami_bird_blue.svg/1200px-Origami_bird_blue.svg.png" alt="Icon" class="icon">
+    <h2 id="circle-title">EXCELLENCE</h2>
+    <p id="circle-text">We are committed to excellence, in spirit and in action. We believe everything that we do and everything we think can always get better.</p>
+  </div>
+
+  <div class="arrow" id="next">&#8594;</div>
+</div>
+
+<div style="position: absolute; bottom: 50px; display: flex; width: 100%; justify-content: space-between; padding: 0 100px;">
+  <div class="side-label" id="left-label">ONE TEAM</div>
+  <div class="side-label" id="right-label">CUSTOMER VALUE</div>
+</div>
+
+<script>
+  const data = [
+    {
+      title: "EXCELLENCE",
+      text: "We are committed to excellence, in spirit and in action. We believe everything that we do and everything we think can always get better.",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Origami_bird_blue.svg/1200px-Origami_bird_blue.svg.png",
+    },
+    {
+      title: "INNOVATION",
+      text: "Innovation drives us forward. We constantly seek new ideas and better ways of doing things.",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Origami_bird_red.svg/1024px-Origami_bird_red.svg.png",
+    },
+    {
+      title: "TEAMWORK",
+      text: "We believe in one team approach. Collaboration and unity create stronger results.",
+      icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Origami_bird_green.svg/1024px-Origami_bird_green.svg.png",
+    }
+  ];
+
+  let currentIndex = 0;
+
+  const title = document.getElementById("circle-title");
+  const text = document.getElementById("circle-text");
+  const icon = document.querySelector(".circle .icon");
+
+  document.getElementById("prev").addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + data.length) % data.length;
+    updateCircle();
+  });
+
+  document.getElementById("next").addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % data.length;
+    updateCircle();
+  });
+
+  function updateCircle() {
+    title.textContent = data[currentIndex].title;
+    text.textContent = data[currentIndex].text;
+    icon.src = data[currentIndex].icon;
+  }
+</script>
+
+</body>
+</html>

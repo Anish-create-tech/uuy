@@ -1,0 +1,127 @@
+<!doctype html>
+<!-- particle canvas and script will be inserted at end of document to avoid breaking the prolog -->
+<html lang="en" data-lowperf="1">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SkyCool™ Flux Pods — Active Thermal Management & Urban Cooling</title>
+<meta name="description" content="SkyCool Flux Pods — Modular, AI-driven systems that actively manage thermal energy and harvest power for self-sufficient rooftop cooling." />
+<style>
+  :root {
+  /* Blue theme requested: deep/navy -> cerulean accents */
+  --bg: #071B2A; /* deep navy background */
+  --card: #0B3A57; /* card surface (slightly lighter) */
+  --accent: #3FA6FF; /* bright cerulean accent */
+  --accent-2: #7FD1FF; /* pale sky highlight */
+  --text-dark: #E6F7FF; /* light text for contrast on dark bg */
+  --muted: #BFDFF6; /* muted copy */
+  --nav-text: #E6F7FF; /* nav link color */
+  --maxw: 1360px;
+  --ease: cubic-bezier(.16, .84, .24, 1);
+  --nav-h: 60px;
+  --radius: 16px;
+}
+
+  @keyframes minimalGradient {
+     0% { background-position: 0% 50%; }
+     20% { background-position: 40% 60%; }
+     40% { background-position: 100% 80%; }
+     60% { background-position: 60% 100%; }
+     80% { background-position: 20% 40%; }
+     100% { background-position: 0% 50%; }
+  }
+
+  /* subtle animated background shift so the yellow gradient feels alive but not distracting */
+  @keyframes bgShift {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+
+
+  html,body{
+    min-height:100%;
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--text-dark);
+  /* Make background a clean white gradient (keeps other overlay planes but sets base to white) */
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+  background-size: 300% 300%;
+  /* much slower background drift to keep base color uniform and non-jumpy */
+  animation: bgShift 60s ease-in-out infinite;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* animated background plane: GPU-friendly multi-stop gradient layer with parallax support */
+  :root{ --gx: 50%; --gy: 40%; --plane-x: 0px; --plane-y: 0px; }
+  :root{ --overlay-opacity: 0.98; }
+  /* Base blurred plane (big & soft) to hide hard edges and create depth */
+  body::before{
+    content: '';
+    position: fixed;
+    left: -30%; top: -30%; width: 160%; height: 160%;
+    pointer-events: none;
+    z-index: -1; /* sits above video (-2) and below the sharp overlay (0) */
+  will-change: transform, opacity;
+  /* hint to browser to promote this element to its own composite layer */
+  -webkit-transform: translateZ(0);
+    background-size: 220% 220%;
+  background-image: radial-gradient(closest-side at 12% 18%, rgb(255, 255, 255), transparent 28%),
+            radial-gradient(closest-side at 82% 8%, rgb(255, 255, 255), transparent 26%),
+            radial-gradient(closest-side at 52% 78%, rgb(255, 255, 255), transparent 28%),
+            linear-gradient(120deg, rgb(255, 255, 255), rgba(255,90,160,0.10));
+    background-blend-mode: screen, screen, screen, overlay;
+  transform: translate3d(var(--plane-x), var(--plane-y), 0) rotate(-10deg) scale(1.12);
+  opacity: 1;
+  filter: blur(2px) saturate(1.02);
+  will-change: transform, opacity, filter;
+    /* gentle top fade so the plane doesn't dominate the hero; smooth gradient to avoid hard edges */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0.08) 22%, rgba(0,0,0,0.6) 56%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 14%, rgba(0,0,0,0.08) 22%, rgba(0,0,0,0.6) 56%, rgba(0,0,0,1) 100%);
+  /* motion driven by RAF-controlled CSS variables for smoother, deterministic motion */
+  animation: none !important;
+  }
+  /* Sharp overlay plane to make the colors pop and provide definition (no blur) */
+  body::after{
+    content: '';
+    position: fixed;
+    left: -30%; top: -30%; width: 160%; height: 160%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  -webkit-transform: translateZ(0);
+  z-index: 0; /* above the blurred base, below content */
+  background-size: 180% 180%;
+  background-image: radial-gradient(closest-side at 14% 18%, rgba(63,166,255,0.28), transparent 26%),
+            radial-gradient(closest-side at 78% 8%, rgba(127,209,255,0.22), transparent 24%),
+            radial-gradient(closest-side at 50% 78%, rgba(63,90,255,0.12), transparent 26%),
+            linear-gradient(120deg, rgba(120,70,230,0.10), rgba(255,90,160,0.06));
+    background-blend-mode: screen, screen, screen, overlay;
+    transform: translate3d(var(--plane-x), var(--plane-y), 0) rotate(-10deg) scale(1.04);
+  opacity: var(--overlay-opacity);
+    /* match the top fade so the overlay also starts below the hero, but smoother */
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.7) 58%, rgba(0,0,0,1) 100%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.7) 58%, rgba(0,0,0,1) 100%);
+    /* motion driven by RAF-controlled CSS variables for smoother, deterministic motion */
+    animation: none !important;
+    /* minor overlay composite hint */
+    will-change: transform, opacity;
+  }
+  @keyframes planeFloat {
+    0%{ transform: translate3d(var(--plane-x), calc(var(--plane-y) * 0.9),0) rotate(-6deg) scale(1.02)}
+    15%{ transform: translate3d(calc(var(--plane-x) * 1.1), calc(var(--plane-y) * 0.95),0) rotate(-5.2deg) scale(1.08)}
+    30%{ transform: translate3d(calc(var(--plane-x) * -0.65), calc(var(--plane-y) * -0.5),0) rotate(-6.4deg) scale(1.03)}
+    55%{ transform: translate3d(calc(var(--plane-x) * 0.9), calc(var(--plane-y) * 0.6),0) rotate(-7deg) scale(1.1)}
+    80%{ transform: translate3d(calc(var(--plane-x) * -0.35), calc(var(--plane-y) * -0.28),0) rotate(-6deg) scale(1.05)}
+    100%{ transform: translate3d(var(--plane-x), var(--plane-y),0) rotate(-6deg) scale(1.02)}
+  }
+  /* keep a light morph for large screens but disable heavy filter animations on small screens */
+  @media (prefers-reduced-motion: reduce), (max-width:900px) {
+    body::after { animation: planeFloat 22s cubic-bezier(.25,.1,.25,1) infinite !important; filter:none !important; }
+  }
+
+  /* Respect reduced motion: pause heavy plane animations */
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none !important; transform: translate3d(0,0,0) rotate(-6deg) scale(1.02) !important; }
+  }
+
+n... (file continues)

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eco DNA Scanner</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#06121f;
+font-family:'Poppins',sans-serif;
+color:white;
+overflow-x:hidden;
+}
+
+body::before{
+content:'';
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top left, rgba(0,255,255,0.08), transparent 35%),
+radial-gradient(circle at bottom right, rgba(0,140,255,0.12), transparent 40%);
+z-index:-1;
+}
+
+.scanner-section{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:60px 5%;
+}
+
+.container{
+width:100%;
+max-width:1400px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:60px;
+align-items:center;
+}
+
+.left-panel h4{
+letter-spacing:4px;
+color:#59f5ff;
+margin-bottom:20px;
+font-size:0.9rem;
+}
+
+.left-panel h1{
+font-family:'Orbitron',sans-serif;
+font-size:4rem;
+line-height:1.15;
+margin-bottom:25px;
+background:linear-gradient(90deg,#ffffff,#59f5ff,#00a2ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.left-panel p{
+color:#cde7ff;
+line-height:1.9;
+font-size:1.05rem;
+margin-bottom:40px;
+max-width:650px;
+}
+
+.form-box{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:30px;
+padding:35px;
+backdrop-filter:blur(12px);
+}
+
+.input-group{
+margin-bottom:25px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:10px;
+color:#7efcff;
+font-weight:500;
+}
+
+.input-group select,
+.input-group input{
+width:100%;
+padding:16px;
+background:#0d2033;
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
+color:white;
+font-size:1rem;
+outline:none;
+}
+
+.input-group select:focus,
+.input-group input:focus{
+border-color:#59f5ff;
+box-shadow:0 0 20px rgba(0,255,255,0.15);
+}
+
+.scan-btn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:18px;
+background:linear-gradient(90deg,#00d0ff,#00ffc3);
+font-size:1rem;
+font-weight:600;
+color:#02111d;
+cursor:pointer;
+transition:0.4s ease;
+margin-top:10px;
+}
+
+.scan-btn:hover{
+transform:translateY(-4px);
+box-shadow:0 0 25px rgba(0,255,255,0.4);
+}
+
+.right-panel{
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.dna-container{
+width:520px;
+height:700px;
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:40px;
+backdrop-filter:blur(14px);
+position:relative;
+overflow:hidden;
+box-shadow:0 0 60px rgba(0,255,255,0.12);
+padding:35px;
+}
+
+.dna-glow{
+position:absolute;
+width:450px;
+height:450px;
+border-radius:50%;
+background:radial-gradient(circle, rgba(0,255,255,0.18), transparent 70%);
+top:-120px;
+left:50%;
+transform:translateX(-50%);
+animation:pulse 4s infinite;
+}
+
+@keyframes pulse{
+0%{transform:translateX(-50%) scale(1);opacity:0.6;}
+50%{transform:translateX(-50%) scale(1.1);opacity:1;}
+100%{transform:translateX(-50%) scale(1);opacity:0.6;}
+}
+
+.dna-circle{
+width:240px;
+height:240px;
+border-radius:50%;
+border:2px solid rgba(0,255,255,0.25);
+margin:40px auto 30px;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+animation:rotate 14s linear infinite;
+}
+
+.dna-circle::before{
+content:'';
+position:absolute;
+inset:18px;
+border-radius:50%;
+border:2px dashed rgba(0,255,255,0.2);
+}
+
+@keyframes rotate{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
+}
+
+.score{
+font-family:'Orbitron',sans-serif;
+font-size:3.5rem;
+color:#6bfff7;
+text-shadow:0 0 20px rgba(0,255,255,0.4);
+}
+
+.result-box{
+margin-top:25px;
+background:rgba(255,255,255,0.04);
+border-radius:24px;
+padding:25px;
+border:1px solid rgba(255,255,255,0.06);
+}
+
+.result-box h2{
+font-size:1.8rem;
+margin-bottom:12px;
+font-family:'Orbitron',sans-serif;
+}
+
+.result-box p{
+line-height:1.8;
+color:#d6e9ff;
+}
+
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px;
+margin-top:25px;
+}
+
+.stat-card{
+background:rgba(255,255,255,0.05);
+padding:22px;
+border-radius:20px;
+border:1px solid rgba(255,255,255,0.06);
+}
+
+.stat-card h3{
+font-size:2rem;
+color:#6bfff7;
+margin-bottom:8px;
+}
+
+.stat-card span{
+color:#cfe5ff;
+font-size:0.95rem;
+}
+
+.eco-rank{
+margin-top:25px;
+text-align:center;
+padding:18px;
+border-radius:18px;
+background:linear-gradient(90deg,rgba(0,255,200,0.15),rgba(0,120,255,0.15));
+color:#7efff5;
+font-size:1.2rem;
+font-weight:600;
+letter-spacing:1px;
+}
+
+@media(max-width:1100px){
+.container{
+grid-template-columns:1fr;
+}
+
+.left-panel h1{
+font-size:3.2rem;
+}
+}
+
+@media(max-width:700px){
+.left-panel h1{
+font-size:2.4rem;
+}
+
+.dna-container{
+width:100%;
+height:auto;
+padding:25px;
+}
+
+.stats{
+grid-template-columns:1fr;
+}
+}
+</style>
+</head>
+<body>
+
+<section class="scanner-section">
+<div class="container">
+
+<div class="left-panel">
+<h4>AI ENVIRONMENTAL ANALYSIS</h4>
+<h1>Eco DNA Scanner</h1>
+<p>
+Analyze your sustainability habits using our futuristic Eco DNA Scanner. Discover your carbon footprint, environmental impact, and personalized green-energy recommendations for a cleaner future.
+</p>
+
+<div class="form-box">
+
+<div class="input-group">
+<label>Transportation Usage</label>
+<select id="transport">
+<option value="40">Mostly Petrol/Diesel Vehicles</option>
+<option value="25">Public Transport</option>
+<option value="15">Electric Vehicle</option>
+<option value="10">Cycling / Walking</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Electricity Consumption</label>
+<select id="electricity">
+<option value="40">High Usage</option>
+<option value="25">Moderate Usage</option>
+<option value="15">Energy Efficient</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Renewable Energy Usage</label>
+<select id="renewable">
+<option value="35">No Renewable Usage</option>
+<option value="20">Partial Renewable Usage</option>
+<option value="5">Mostly Renewable Energy</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Daily Waste Production</label>
+<select id="waste">
+<option value="35">High Waste</option>
+<option value="20">Average Waste</option>
+<option value="8">Low Waste / Recycling</option>
+</select>
+</div>
+
+<button class="scan-btn" onclick="scanDNA()">Run Eco DNA Analysis</button>
+
+</div>
+</div>
+
+<div class="right-panel">
+<div class="dna-container">
+<div class="dna-glow"></div>
+
+<div class="dna-circle">
+<div class="score" id="score">72</div>
+</div>
+
+<div class="result-box">
+<h2 id="status">Green Citizen</h2>
+<p id="resultText">
+Your lifestyle reflects moderate sustainability practices with opportunities to reduce carbon emissions and improve renewable energy usage.
+</p>
+</div>
+
+<div class="stats">
+<div class="stat-card">
+<h3 id="carbon">2.8T</h3>
+<span>Estimated Carbon Output</span>
+</div>
+
+<div class="stat-card">
+<h3 id="impact">Medium</h3>
+<span>Environmental Impact</span>
+</div>
+</div>
+
+<div class="eco-rank" id="rank">
+SUSTAINABILITY RANK : LEVEL 2
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+
+<script>
+
+function scanDNA(){
+
+const transport = parseInt(document.getElementById('transport').value);
+const electricity = parseInt(document.getElementById('electricity').value);
+const renewable = parseInt(document.getElementById('renewable').value);
+const waste = parseInt(document.getElementById('waste').value);
+
+const totalImpact = transport + electricity + renewable + waste;
+const ecoScore = 100 - totalImpact;
+
+const score = document.getElementById('score');
+const status = document.getElementById('status');
+const resultText = document.getElementById('resultText');
+const carbon = document.getElementById('carbon');
+const impact = document.getElementById('impact');
+const rank = document.getElementById('rank');
+
+score.innerText = ecoScore;
+
+if(ecoScore >= 80){
+status.innerText = 'Eco Visionary';
+resultText.innerText = 'Excellent sustainability practices detected. Your lifestyle strongly supports renewable energy adoption and low carbon emissions.';
+carbon.innerText = '1.2T';
+impact.innerText = 'Low';
+rank.innerText = 'SUSTAINABILITY RANK : LEVEL 5';
+}
+
+else if(ecoScore >= 60){
+status.innerText = 'Green Citizen';
+resultText.innerText = 'Your environmental impact is moderate. Adopting more renewable energy and reducing waste can further improve sustainability.';
+carbon.innerText = '2.8T';
+impact.innerText = 'Medium';
+rank.innerText = 'SUSTAINABILITY RANK : LEVEL 3';
+}
+
+else{
+status.innerText = 'Carbon Intensive';
+resultText.innerText = 'High carbon footprint detected. Transitioning toward clean energy and sustainable transport can significantly improve environmental health.';
+carbon.innerText = '5.7T';
+impact.innerText = 'High';
+rank.innerText = 'SUSTAINABILITY RANK : LEVEL 1';
+}
+}
+
+</script>
+
+</body>
+</html>

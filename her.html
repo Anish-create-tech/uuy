@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyCool™ Flux Pods — Pitch Deck</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --accent: #4dd0e1;
+      --muted: #074294;
+      --glass: rgba(255,255,255,0.04);
+      --maxw: 1100px;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: "Inter", system-ui, sans-serif;
+      color: #0b1220; /* dark text for light background */
+      background: linear-gradient(180deg, #0b3a57 0%, #072b40 100%); /* blue gradient */
+    }
+    /* remove animated gradient for light theme */
+
+    /* Header video */
+    .video-header {
+      position: relative;
+      width: 100%;
+      height: 60vh;
+      overflow: hidden;
+    }
+    .video-header video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .video-overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: rgb(27, 1, 67);
+      background: rgba(0,0,0,0.35);
+      text-align: center;
+    }
+    .video-overlay h1 {
+      font-size: 3em;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    }
+    .video-overlay p {
+      font-size: 1.3em;
+      margin-top: 10px;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+    }
+
+    /* Deck + slides */
+    .stage { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px; }
+    .deck { width:100%; max-width:var(--maxw); position:relative; }
+
+    .slide {
+      background: linear-gradient(180deg, #00108a, #003265); /* subtle card surface */
+      border-radius:14px; padding:44px;
+      border: 1px solid rgba(11,18,32,0.06); /* subtle dark outline */
+      box-shadow:0 12px 36px rgba(2,6,23,0.08);
+      min-height:540px; display:none;
+      grid-template-columns:1fr 420px; gap:30px;
+      animation:fadeIn 0.6s ease both;
+    }
+    .slide.active { display:grid; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:none;} }
+
+  h1 { font-size: 42px; line-height:1.2; color:#0b1220; margin-bottom:16px; }
+  h2 { font-size: 24px; color:var(--accent); margin-bottom:12px; }
+  h3 { font-size: 18px; margin-top:0; }
+  p { font-size: 16px; color:#475569; line-height:1.6; margin: 8px 0; }
+  strong { color:#0b1220; }
+
+    /* Cards */
+    .card {
+      background: #f8fafc; border-radius:12px; padding:18px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+      transition: all 0.3s ease;
+      color: #0b1220;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(14,60,120,0.08);
+    }
+
+    /* Table */
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th,td { padding:10px; text-align:left; }
+    th { color:var(--accent); font-weight:600; border-bottom:1px solid rgba(255,255,255,0.1); }
+    tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+
+    /* Controls */
+    .controls {
+      position:absolute; left:20px; bottom:20px;
+      display:flex; gap:10px;
+    }
+    .btn {
+      background:#002e5e; /* light blue button */
+      border:1px solid rgba(2,58,115,0.06);
+      padding:10px 16px;
+      border-radius:10px;
+      color:#04243f; font-size:14px;
+      cursor:pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background:#cfe6ff; color:#04243f; box-shadow:0 6px 18px rgba(14,60,120,0.08); }
+    .pager { position:absolute; right:20px; bottom:20px; color:var(--muted); }
+
+    /* Logo */
+    .logo { display:inline-flex; gap:8px; align-items:center; margin-bottom:12px; }
+    .logo .dot {
+      width:18px; height:18px; border-radius:6px;
+      background:linear-gradient(135deg,var(--accent),#7fffd4);
+      box-shadow:0 6px 20px rgba(77,208,225,0.3);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity:1; }
+      50% { transform: scale(1.3); opacity:0.6; }
+    }
+
+    @media(max-width:900px) {
+      .slide { grid-template-columns:1fr; min-height:640px; }
+      .card { order:2; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Video Header -->
+  <header class="video-header">
+    <video autoplay muted loop>
+  <!-- Use a relative path for GitHub Pages. Put the video file in hg/assets/ or the same folder as this HTML. -->
+      <source src="14705140_1920_1080_30fps.mp4" type="video/mp4">
+      <source src="14705140_1920_1080_30fps.mp4" type="video/mp4">
+      <source src="14705140_1920_1080_30fps.mp4" type="video/mp4">
+    </video>
+      Your browser does not support HTML5 video.
+    </video>
+  <p class="media-link"><a href="14705140_1920_1080_30fps.mp4" target="_blank" rel="noopener">Open header video (raw file)</a></p>
+  <p class="media-link"><a href="14705140_1920_1080_30fps.mp4" target="_blank" rel="noopener">Open header video (raw file)</a></p>
+  <p class="media-link"><a href="14705140_1920_1080_30fps.mp4" target="_blank" rel="noopener">Open header video (raw file)</a></p>
+    <div class="video-overlay">
+      <h1>SkyCool™ Flux Pods</h1>
+      <p>Transforming rooftops into smart cooling & energy hubs</p>
+    </div>
+  </header>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SkyCool™ Flux Pods — Pitch Deck (Enhanced)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --accent: #4dd0e1;
+      --muted: #94a3b8;
+      --glass: rgba(255,255,255,0.04);
+      --maxw: 1100px;
+    }
+
+    html, body {
+      height:100%; margin:0;
+      font-family:"Inter", system-ui, sans-serif;
+      color: #0b1220;
+      background: linear-gradient(180deg, #071D2B 0%, #071D2B 100%);
+    }
+
+  h1 { font-size: 42px; line-height:1.2; color:#0b1220; margin-bottom:16px; }
+  /* Ensure video header overlay text stays white */
+  .video-overlay h1, .video-overlay p { color: #ffffff; }
+    h2 { font-size: 24px; color:var(--accent); margin-bottom:12px; }
+    h3 { font-size: 18px; margin-top:0; }
+    p { font-size: 16px; color:#475569; line-height:1.6; margin: 8px 0; }
+    strong { color:#0b1220; }
+
+    /* Stage + deck */
+    .stage { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px; }
+    .deck { width:100%; max-width:var(--maxw); position:relative; }
+
+    /* Slides */
+    .slide {
+      background: linear-gradient(180deg, #ffffff, #fbfdff); /* subtle card surface */
+      border-radius:14px; padding:44px;
+      box-shadow:0 8px 30px rgba(2,6,23,0.06);
+      min-height:540px; display:none;
+      grid-template-columns:1fr 420px; gap:30px;
+      animation:fadeIn 0.6s ease both;
+    }
+    .slide.active { display:grid; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:none;} }
+
+    /* Cards */
+    .card {
+      background: #f8fafc; border-radius:12px; padding:18px;
+      border: 1px solid rgba(11,18,32,0.06); /* outline for visibility */
+      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+      transition: all 0.3s ease;
+      color: #0b1220;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(14,60,120,0.08);
+    }
+
+    /* Comparison table */
+    table { width:100%; border-collapse:collapse; margin-top:12px; }
+    th,td { padding:10px; text-align:left; }
+    th { color:var(--accent); font-weight:600; border-bottom:1px solid rgba(11,18,32,0.06); }
+    tr:nth-child(even) td { background:rgba(11,18,32,0.03); }
+
+    /* Controls */
+    .controls {
+      position:absolute; left:20px; bottom:20px;
+      display:flex; gap:10px;
+    }
+    .btn {
+      background:#e6f2ff; /* light blue button */
+      border:1px solid rgba(2,58,115,0.06);
+      padding:10px 16px;
+      border-radius:10px;
+      color:#04243f; font-size:14px;
+      cursor:pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background:#cfe6ff; color:#04243f; box-shadow:0 6px 18px rgba(14,60,120,0.08); }
+    .pager { position:absolute; right:20px; bottom:20px; color:var(--muted); }
+
+    /* Logo */
+    .logo { display:inline-flex; gap:8px; align-items:center; margin-bottom:12px; }
+    .logo .dot {
+      width:18px; height:18px; border-radius:6px;
+      background:linear-gradient(135deg,var(--accent),#7fffd4);
+      box-shadow:0 6px 20px rgba(77,208,225,0.3);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity:1; }
+      50% { transform: scale(1.3); opacity:0.6; }
+    }
+
+    @media(max-width:900px) {
+      .slide { grid-template-columns:1fr; min-height:640px; }
+      .card { order:2; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="deck">
+
+      <!-- Slide 1: Title -->
+      <section class="slide active">
+        <div>
+          <div class="logo"><div class="dot"></div><div style="color:#bfeff3;font-weight:600">SkyCool™ Flux Pods</div></div>
+          <h1>Turning hot rooftops into smart energy farms</h1>
+          <p>Modular rooftop pods that actively move heat with phase-change microchannels, harvest waste heat with TEGs, and keep reflectivity peak with self-cleaning nano-surfaces.</p>
+          <div class="card" style="margin-top:20px">
+            <strong>Pilot-ready tech stack:</strong>
+            <p>AI thermal mapping • Microfluidic PCM channels • Thin-film TEGs • Nano hydrophobic coating</p>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Quick Metrics</h2>
+          <canvas id="metricChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Slide 2: Problem -->
+      <section class="slide">
+        <div>
+          <h2>Problem</h2>
+          <h1>Urban rooftops are overheating</h1>
+          <p>Rooftops trap heat, increasing local temperatures and driving up HVAC energy use. Existing solutions are passive, degrade quickly, and don’t reclaim energy.</p>
+          <div class="card" style="margin-top:20px">
+            <strong>Existing Pain Points</strong>
+            <ul>
+              <li>Passive PCMs don’t redistribute heat</li>
+              <li>Reflective surfaces dirty quickly</li>
+              <li>No energy reclamation mechanism</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Cost Impact</h3>
+          <canvas id="costChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Slide 3: Idea -->
+      <section class="slide">
+        <div>
+          <h2>The Big Idea</h2>
+          <h1>Active cooling + energy harvesting + self-care</h1>
+          <p>Pods contain microfluidic PCM channels managed by AI, thin-film thermoelectric harvesters, and nano-coated reflective tops that self-clean.</p>
+          <div class="pod-diagram">
+            <div class="layer"><strong>Top:</strong> Self-cleaning reflective nano-coating</div>
+            <div class="layer"><strong>Middle:</strong> PCM microchannels (AI-controlled)</div>
+            <div class="layer"><strong>Base:</strong> Thin-film TEG + sensors</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>AI Role</h3>
+          <p>AI maps rooftop temps, redistributes PCM flow, and optimizes cleaning cycles.</p>
+        </div>
+      </section>
+
+      <!-- Slide 4: Comparison -->
+      <section class="slide">
+        <div>
+          <h2>Comparison</h2>
+          <h1>Why SkyCool™ beats alternatives</h1>
+          <table>
+            <tr><th>Feature</th><th>Conventional</th><th>SkyCool™ Pods</th></tr>
+            <tr><td>PCM</td><td>Passive</td><td>Dynamic, AI-controlled</td></tr>
+            <tr><td>Energy Harvest</td><td>None</td><td>Thin-film TEGs</td></tr>
+            <tr><td>Maintenance</td><td>Manual</td><td>Self-cleaning</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>ROI Projection</h3>
+          <canvas id="roiChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button class="btn" id="prev">◀ Prev</button>
+        <button class="btn" id="next">Next ▶</button>
+      </div>
+      <div class="pager" id="pager">1 / 4</div>
+
+    </div>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    let idx = 0;
+    const pager = document.getElementById('pager');
+    function show(i){
+      slides.forEach(s=>s.classList.remove('active'));
+      idx = (i+slides.length)%slides.length;
+      slides[idx].classList.add('active');
+      pager.textContent = (idx+1) + ' / ' + slides.length;
+    }
+    document.getElementById('prev').onclick = ()=> show(idx-1);
+    document.getElementById('next').onclick = ()=> show(idx+1);
+    document.addEventListener('keydown', e=>{
+      if(e.key==='ArrowRight') show(idx+1);
+      if(e.key==='ArrowLeft') show(idx-1);
+    });
+    show(0);
+
+    // Chart.js
+    new Chart(document.getElementById('metricChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Temp ↓','AC Load ↓','Power ↑'],
+        datasets: [{label:'% Impact', data:[35,25,15], backgroundColor:['#4dd0e1','#7fffd4','#48c9b0']}]
+      },
+      options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#0b1220'}},x:{ticks:{color:'#0b1220'}}}}
+    });
+    new Chart(document.getElementById('costChart'), {
+      type: 'doughnut',
+      data:{labels:['Cooling Costs','Maintenance','Wasted Energy'],
+        datasets:[{data:[50,30,20], backgroundColor:['#4dd0e1','#ff7675','#ffeaa7']}]
+      },
+      options:{plugins:{legend:{labels:{color:'#0b1220'}}}}
+    });
+    new Chart(document.getElementById('roiChart'), {
+      type:'line',
+      data:{
+        labels:['Year 1','Year 2','Year 3','Year 4','Year 5'],
+        datasets:[{label:'ROI %',data:[-10,15,40,70,100],borderColor:'#4dd0e1',tension:0.3}]
+      },
+      options:{scales:{x:{ticks:{color:'#0b1220'}},y:{ticks:{color:'#0b1220'}}}}
+    });
+  </script>
+</body>
+</html>
+

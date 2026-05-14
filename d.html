@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innovation Community & Volunteer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--accent:#6ffff2;--muted:#d5e9ff;--bg:#07121d;--card:rgba(255,255,255,0.05);--radius:24px}
+    *{box-sizing:border-box}
+    body{font-family:'Poppins',sans-serif;margin:0;background:var(--bg);color:white;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at top left, rgba(0,255,255,0.08), transparent 35%),radial-gradient(circle at bottom right, rgba(0,120,255,0.14), transparent 40%);z-index:-1}
+    .container{max-width:1400px;margin:60px auto;padding:24px}
+
+    h1,h2{font-weight:700;text-align:center;color:#6ffff2}
+
+    /* CARD STYLE */
+    .card{background:var(--card);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);backdrop-filter:blur(12px);padding:28px;margin-bottom:24px;transition:.5s;max-width:980px;margin:0 auto}
+    .card:hover{transform:translateY(-10px);box-shadow:0 0 30px rgba(0,255,255,0.18);border-color:#6ffff2}
+
+    /* GRID */
+    .grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:30px;max-width:980px;margin:0 auto}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+    /* INPUTS */
+    label{display:block;font-weight:600;margin-bottom:6px;font-size:14px;color:#d6e8ff}
+    input,textarea,select{width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;font-size:14px;background:rgba(255,255,255,0.05);color:white}
+    textarea{min-height:120px}
+
+    .row{display:flex;gap:12px}
+    .row>*{flex:1}
+
+    .btn{padding:12px 20px;border:none;border-radius:12px;background:linear-gradient(90deg,#00d9ff,#00ffc3);color:#04131d;font-weight:700;cursor:pointer;transition:.5s}
+    .btn:hover{transform:translateY(-5px);box-shadow:0 0 35px rgba(0,255,255,0.35)}
+    .btn.ghost{background:transparent;color:#6ffff2;border:2px solid rgba(255,255,255,0.08)}
+
+    .volunteer-item{padding:12px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);margin-bottom:10px;color:#d6e8ff}
+
+    footer{text-align:center;font-size:13px;color:var(--muted);margin-top:30px}
+
+    .community-section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 0;position:relative}
+    .community-section > .community-wrapper{display:grid;grid-template-columns:1.05fr 0.95fr;gap:48px;align-items:center;justify-items:center;width:100%;max-width:1160px;margin:0 auto;padding:0 24px}
+    .left-panel{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:700px;margin:0 auto}
+    .left-panel h4{letter-spacing:5px;color:#6ffff2;font-size:0.95rem;margin-bottom:18px}
+    .left-panel h1{font-family:'Orbitron',sans-serif;font-size:4rem;line-height:1.15;margin-bottom:25px;background:linear-gradient(90deg,#ffffff,#69fff3,#00a2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:0.8px}
+    .left-panel p{line-height:1.9;font-size:1.05rem;color:#d5e9ff;margin-bottom:40px;max-width:700px;margin:0 auto}
+    .features{display:grid;grid-template-columns:1fr 1fr;gap:22px;justify-items:center}
+    .feature-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:25px;backdrop-filter:blur(12px);transition:0.5s ease;width:100%;min-height:220px}
+    .feature-card:hover{transform:translateY(-10px);box-shadow:0 0 30px rgba(0,255,255,0.18);border-color:#6ffff2}
+    .feature-card h2{font-size:1.3rem;margin-bottom:12px;font-family:'Orbitron',sans-serif}
+    .feature-card p{font-size:0.95rem;line-height:1.7;color:#d6e8ff}
+    .icon{width:65px;height:65px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:20px;background:linear-gradient(135deg, rgba(0,255,255,0.15), rgba(0,120,255,0.12))}
+    .join-btn{margin-top:35px;padding:18px 36px;border:none;border-radius:18px;background:linear-gradient(90deg,#00d9ff,#00ffc3);font-size:1rem;font-weight:700;color:#04131d;cursor:pointer;transition:0.5s ease}
+    .join-btn:hover{transform:translateY(-5px);box-shadow:0 0 35px rgba(0,255,255,0.35)}
+    .right-panel{position:relative;display:flex;align-items:center;justify-content:center;justify-self:center}
+    .community-box{width:100%;max-width:520px;height:680px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:40px;overflow:hidden;position:relative;backdrop-filter:blur(14px);box-shadow:0 0 50px rgba(0,255,255,0.15);margin:0 auto}
+    .community-box img{width:100%;height:100%;object-fit:cover;opacity:0.88}
+    .overlay{position:absolute;inset:0;background:linear-gradient(to top, rgba(7,18,29,0.95), rgba(7,18,29,0.2))}
+    .community-info{position:absolute;bottom:35px;left:35px;right:35px}
+    .community-info h2{font-family:'Orbitron',sans-serif;font-size:2rem;margin-bottom:15px}
+    .community-info p{line-height:1.8;color:#d7e9ff}
+    .members{margin-top:25px;padding:18px;background:rgba(255,255,255,0.06);border-radius:18px;text-align:center;font-size:1.1rem;color:#74fff7;font-weight:600}
+    .members span{display:block;font-size:2.3rem;font-family:'Orbitron',sans-serif;margin-top:8px}
+    .glow-ring{position:absolute;width:650px;height:650px;border-radius:50%;border:1px solid rgba(0,255,255,0.08);right:-220px}
+    .glow-ring::before,.glow-ring::after{content:'';position:absolute;inset:70px;border-radius:50%;border:1px solid rgba(0,255,255,0.08)}
+    .glow-ring::after{inset:140px}
+    @media(max-width:1100px){.community-section > .community-wrapper{grid-template-columns:1fr}.left-panel h1{font-size:3rem}}
+    @media(max-width:900px){.community-section{padding:60px 20px}.features{grid-template-columns:1fr}.community-box{height:520px}}
+    @media(max-width:700px){.left-panel h1{font-size:2.4rem}.community-section{padding:40px 16px}.features{grid-template-columns:1fr}.community-box{height:520px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="community-section">
+      <div class="glow-ring"></div>
+      <div class="community-wrapper">
+        <div class="left-panel">
+          <h4>GLOBAL CLEAN ENERGY NETWORK</h4>
+          <h1>Innovation Community</h1>
+          <p>
+            Connect with students, innovators, researchers, and sustainability leaders working together to build futuristic clean-energy solutions and eco-friendly technologies for a greener tomorrow.
+          </p>
+
+          <div class="features">
+            <div class="feature-card">
+              <div class="icon">💡</div>
+              <h2>Share Ideas</h2>
+              <p>
+                Submit futuristic renewable-energy concepts, sustainability innovations, and smart eco solutions.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="icon">🌍</div>
+              <h2>Global Collaboration</h2>
+              <p>
+                Connect with eco innovators and communities working on climate-friendly technologies worldwide.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="icon">⚡</div>
+              <h2>Green Technology</h2>
+              <p>
+                Explore advanced clean-energy systems including AI smart grids, hydrogen energy, and future sustainability tech.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="icon">🧠</div>
+              <h2>Research Network</h2>
+              <p>
+                Collaborate on research, environmental projects, and innovation-based sustainability initiatives.
+              </p>
+            </div>
+          </div>
+
+          <a href="https://buy.stripe.com/test_eVqdR33lJ17sdYk0XDdby04" class="join-btn" target="_blank" rel="noopener noreferrer">Join Innovation Community</a>
+        </div>
+
+        <div class="right-panel">
+          <div class="community-box">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1400&auto=format&fit=crop" alt="Innovation Community">
+            <div class="overlay"></div>
+            <div class="community-info">
+              <h2>Future Sustainability Hub</h2>
+              <p>
+                A futuristic collaboration platform where innovation, renewable energy, and environmental sustainability come together.
+              </p>
+              <div class="members">
+                ACTIVE GREEN INNOVATORS
+                <span>18,492</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="card">
+      <h1>Join the Green Mission</h1>
+      <p class="lead">Become part of our volunteer community. Help with clean-ups, awareness drives, monitoring, and more. Fill the form below and our coordinator will contact you.</p>
+      <div class="grid">
+        <div>
+          <form id="volunteerForm" action="https://formspree.io/f/mrbykddr" method="POST">
+            <div class="row">
+              <div>
+                <label for="vname">Full name</label>
+                <input id="vname" name="name" type="text" placeholder="e.g. Priya Sharma" required />
+              </div>
+              <div>
+                <label for="vphone">Phone</label>
+                <input id="vphone" name="phone" type="tel" placeholder="+91 98765 43210" required />
+              </div>
+            </div>
+
+            <label for="vemail">Email</label>
+            <input id="vemail" name="email" type="email" placeholder="you@example.com" required />
+
+            <label for="vcity">City / Locality</label>
+            <input id="vcity" name="city" type="text" placeholder="e.g. Wazirabad, Delhi" />
+
+            <label for="vroles">I can help with</label>
+            <select id="vroles" name="roles" multiple aria-label="Volunteer roles">
+              <option>Join clean-up drives</option>
+              <option>Participate in awareness campaigns</option>
+              <option>Support tree plantation</option>
+              <option>Promote renewable energy</option>
+            </select>
+
+            <label for="vnotes">Anything you'd like us to know</label>
+            <textarea id="vnotes" name="notes" placeholder="Tell us about your availability, skills, or past experience"></textarea>
+
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+              <button type="submit" class="btn"> Volunteer</button>
+              <button type="button" id="clearVolunteer" class="btn ghost">Clear</button>
+            </div>
+
+            <div id="volMessage" aria-live="polite"></div>
+          </form>
+
+          <!-- Recent volunteer section removed per request -->
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      © <span id="year"></span> EcoNova | Sustainable Future Initiative
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const volunteerForm = document.getElementById('volunteerForm');
+    document.getElementById('clearVolunteer').addEventListener('click', ()=> {
+      volunteerForm.reset();
+      document.getElementById('volMessage').innerHTML = '';
+    });
+  </script>
+</body>
+</html>

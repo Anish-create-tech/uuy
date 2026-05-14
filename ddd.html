@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyCool Conversion Section</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f8fb;
+      color: #333;
+    }
+
+    .conversion-section {
+      padding: 50px 10%;
+      text-align: center;
+      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+    }
+
+    .conversion-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #00796b;
+    }
+
+    .pricing-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 40px 0;
+    }
+
+    .pricing-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      padding: 25px;
+      flex: 1 1 250px;
+      max-width: 300px;
+      transition: transform 0.3s ease;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+    }
+
+    .pricing-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #004d40;
+    }
+
+    .pricing-card p {
+      font-size: 1rem;
+      margin: 10px 0;
+    }
+
+    .price {
+      font-size: 2rem;
+      color: #0288d1;
+      margin: 15px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #00796b;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #004d40;
+    }
+
+    .cta-section {
+      margin-top: 40px;
+    }
+
+    /* Partner Form Styling */
+    .partner-form {
+      display: none;
+      margin-top: 20px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .partner-form input, .partner-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .partner-form button {
+      width: 100%;
+      padding: 12px;
+      background: #0288d1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .partner-form button:hover {
+      background: #01579b;
+    }
+
+    .faq {
+      text-align: left;
+      margin: 40px auto;
+      max-width: 700px;
+    }
+
+    .faq h3 {
+      color: #0288d1;
+      margin-bottom: 15px;
+    }
+
+    .faq-item {
+      margin-bottom: 15px;
+    }
+
+    .faq-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="conversion-section">
+    <h2>Get Started with SkyCool</h2>
+    <p>Choose a plan that suits your needs, or partner with us for large-scale deployment.</p>
+
+    <!-- Pricing Plans -->
+    <div class="pricing-container">
+      <div class="pricing-card">
+        <h3>Basic</h3>
+        <p>For individuals & small homes</p>
+        <div class="price">₹14000</div>
+        <p>✔ 1 SkyCool Unit</p>
+        <p>✔ Mobile App Access</p>
+        <p>✔ 1-Year Warranty</p>
+        <a href="https://buy.stripe.com/test_cNicMZcWjaI29I4eOtdby01" class="btn">Buy Now</a>
+      </div>
+
+      <div class="pricing-card">
+        <h3>Premium</h3>
+        <p>For families & offices</p>
+        <div class="price">₹28000</div>
+        <p>✔ 3 SkyCool Units</p>
+        <p>✔ Advanced Monitoring</p>
+        <p>✔ 2-Year Warranty</p>
+        <a href="https://buy.stripe.com/test_cNicMZcWjaI29I4eOtdby01" class="btn">Pre-Order</a>
+      </div>
+
+      <div class="pricing-card">
+        <h3>Enterprise</h3>
+        <p>For large businesses</p>
+        <div class="price">Custom</div>
+        <p>✔ Bulk Deployment</p>
+        <p>✔ Dedicated Support</p>
+        <p>✔ Integration APIs</p>
+        <a href="mailto:balwanianish@gmail.com" class="btn">Contact Sales</a>
+      </div>
+    </div>
+
+    <!-- Corporate CTA -->
+    <div class="cta-section">
+      <h3>Looking for Corporate Partnerships?</h3>
+      <p>We collaborate with industries, governments, and organizations worldwide.</p>
+      <button class="btn" onclick="toggleForm()">Partner with Us</button>
+
+      <!-- Hidden Form -->
+      <form class="partner-form" id="partnerForm" action="https://formspree.io/f/mrbykddr" method="POST">
+        <h3>Partner With SkyCool</h3>
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <input type="text" name="company" placeholder="Company / Organization" required>
+        <textarea name="message" rows="4" placeholder="Tell us how you’d like to partner"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq">
+      <h3>Frequently Asked Questions</h3>
+      <div class="faq-item">
+        <strong>❓ How does SkyCool work?</strong>
+        <span>SkyCool uses advanced reflective technology and smart cooling systems to reduce heat and energy usage.</span>
+      </div>
+      <div class="faq-item">
+        <strong>❓ Do I need special installation?</strong>
+        <span>No. SkyCool units are plug-and-play, and can be installed easily by any electrician.</span>
+      </div>
+      <div class="faq-item">
+        <strong>❓ Is there a warranty?</strong>
+        <span>Yes. Basic plan comes with 1 year, Pro with 2 years, and Enterprise offers custom support.</span>
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    function toggleForm() {
+      const form = document.getElementById("partnerForm");
+      form.style.display = form.style.display === "block" ? "none" : "block";
+    }
+  </script>
+
+</body>
+</html>

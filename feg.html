@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Company Purpose & Vision</title>
+  <style>
+    :root {
+      --blue: #0052cc;
+      --dark: #2b2b2b;
+      --light-gray: #f5f5f5;
+      --text: #222;
+      --muted: #666;
+      --white: #ffffff;
+    }
+    *{box-sizing:border-box}
+    body{font-family: "Segoe UI", Tahoma, sans-serif; margin:0; background:var(--light-gray); color:var(--text);}
+    .container{max-width:1100px;margin:28px auto;padding:20px}
+    .hero{display:grid;grid-template-columns: 1fr 480px;gap:24px;align-items:center;min-height:320px}
+    .hero-left{padding:28px}
+    .hero-left h1{font-size:2.2rem;margin-bottom:12px}
+    .hero-left p{color:var(--muted);line-height:1.6}
+    .hero-right{display:flex;flex-direction:column;gap:18px}
+    .hero-box{background:var(--white);padding:22px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.06)}
+    .hero-box.purpose{background:linear-gradient(180deg,#0b63d6,#0a4fb0);color:#fff}
+    .hero-box.vision{background:linear-gradient(180deg,#0b2b34,#07202a);color:#fff}
+    .hero-box h2{margin:0 0 8px;font-size:1.2rem}
+    .hero-box p{margin:0;color:rgba(255,255,255,0.92);line-height:1.45}
+
+    /* Values section (accordion) */
+    .values{max-width:1100px;margin:28px auto;background:#fff;border-radius:10px;padding:26px}
+    .values h3{margin:0 0 18px}
+    .values-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .value-item{border-bottom:1px solid #eee;padding:12px 0}
+    .value-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+    .value-title{font-weight:600;color:var(--text)}
+    .toggle-btn{border:0;background:none;font-size:20px;cursor:pointer}
+    .value-content{display:none;margin-top:8px;margin-left:6px}
+    .value-item.active .value-content{display:block}
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .hero-right{order:2}
+      .hero-left{order:1}
+      .values-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero" aria-label="Purpose and Vision">
+      <div class="hero-left">
+        <h1>Atmospheric Water & Energy Harvester— Purpose & Vision</h1>
+        <p>We design futuristic atmospheric harvesting systems that generate clean water, renewable energy, and environmental purification for the sustainable cities of the future. Our intelligent technology aims to reduce pollution, address water scarcity, and support energy-efficient living through advanced clean-energy innovation.</p>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-box purpose" role="region" aria-labelledby="purpose-title">
+          <h2 id="purpose-title">🌌Our Purpose</h2>
+          <p>Our purpose is to protect, restore, and preserve the river so it can continue to support life, livelihoods, and future generations. We work to reduce pollution, revive natural ecosystems, and promote responsible practices through technology, community participation, and scientific innovation. Every step we take is guided by the belief that a clean river is essential for a healthy environment and a sustainable future.</p>
+        </div>
+
+        <div class="hero-box vision" role="region" aria-labelledby="vision-title">
+          <h2 id="vision-title">⚡Our Vision</h2>
+          <p>Our vision is to create a river that flows clean, vibrant, and full of life — a river that communities can depend on, cherish, and proudly pass on to the next generation. We aim to become a leading force in river conservation by establishing world-class restoration systems, inspiring public participation, and building a future where every individual plays an active role in protecting our water resources.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="values" aria-label="Core values">
+    <h3>Our core values</h3>
+    <div class="values-grid">
+      <div class="value-item">
+        <div class="value-header"><div class="value-title">Integrity</div><button class="toggle-btn">＋</button></div>
+        <div class="value-content"><ul><li>Be truthful in all actions and communications</li><li>Follow moral principles and company standards</li></ul></div>
+      </div>
+
+      <div class="value-item">
+        <div class="value-header"><div class="value-title">Excellence</div><button class="toggle-btn">＋</button></div>
+        <div class="value-content"><ul><li>Strive for outstanding results</li><li>Innovate with quality</li></ul></div>
+      </div>
+
+      <div class="value-item">
+        <div class="value-header"><div class="value-title">Care</div><button class="toggle-btn">＋</button></div>
+        <div class="value-content"><ul><li>Value people and communities</li><li>Protect the environment</li></ul></div>
+      </div>
+
+      <div class="value-item">
+        <div class="value-header"><div class="value-title">Courage</div><button class="toggle-btn">＋</button></div>
+        <div class="value-content"><ul><li>Take bold decisions</li><li>Stand by principles</li></ul></div>
+      </div>
+
+      <div class="value-item">
+        <div class="value-header"><div class="value-title">Resilience</div><button class="toggle-btn">＋</button></div>
+        <div class="value-content"><ul><li>Adapt to change</li><li>Thrive in challenges</li></ul></div>
+      </div>
+
+      <div class="value-item">
+        <div class="value-header"><div class="value-title">Collaboration & Teamwork</div><button class="toggle-btn">＋</button></div>
+        <div class="value-content"><ul><li>Listen actively and share clearly</li><li>Help teammates succeed</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.value-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const item = header.parentElement;
+        const btn = header.querySelector('.toggle-btn');
+        // Close other items
+        document.querySelectorAll('.value-item').forEach(i => {
+          if (i !== item) {
+            i.classList.remove('active');
+            i.querySelector('.toggle-btn').textContent = '＋';
+          }
+        });
+        item.classList.toggle('active');
+        btn.textContent = item.classList.contains('active') ? '−' : '＋';
+      });
+    });
+  </script>
+</body>
+</html>
+

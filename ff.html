@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SkyCool™ Flux Pods — Features Overview (Interactive)</title>
+  <style>
+    :root{--bg:#071428;--card:#071626;--accent:#48d1cc;--muted:#9fb3c9;--glass:rgba(255,255,255,0.03);--maxw:1100px}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#e7f2f7;background:linear-gradient(180deg,#04101a 0%, #072032 70%)}
+    .stage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:36px}
+    .wrap{width:100%;max-width:var(--maxw)}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7fffd4);box-shadow:0 8px 30px rgba(72,209,204,0.12)}
+    h1{font-size:20px;margin:0;color:#eaffff}
+    p.lead{color:var(--muted);margin:0}
+
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:20px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:22px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    .panel h2{color:var(--accent);margin:0 0 8px 0}
+    .feature{display:flex;gap:14px;align-items:flex-start;padding:12px;border-radius:8px;background:rgba(255,255,255,0.012);margin-bottom:10px}
+    .tag{width:56px;height:56px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent)}
+    .fbody{flex:1}
+    .fbody h3{margin:0;color:#e6fbff}
+    .fbody p{margin:6px 0 0 0;color:var(--muted);font-size:14px}
+
+    .spec{font-family:monospace;background:rgba(0,0,0,0.24);padding:10px;border-radius:8px;color:#dff8fb;font-size:13px}
+    .controls{display:flex;gap:10px;margin-top:12px}
+    .btn{background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),#80ffe8);color:#012426;font-weight:700}
+
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:8px;text-align:left;color:var(--muted)}
+    th{color:var(--accent);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.01)}
+
+    @media(max-width:880px){.grid{grid-template-columns:1fr}.panel{padding:16px}}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <div class="logo"></div>
+          <div>
+            <h1>SkyCool™ Flux Pods — Feature Catalog</h1>
+            <p class="lead">Interactive one-page feature reference for engineers, pilots, and sales.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" id="downloadSpec">Download Spec</button>
+          <button class="btn primary" id="showJSON">Show JSON</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <main class="panel">
+          <h2>Core Product Features</h2>
+
+          <div class="feature">
+            <div class="tag">01</div>
+            <div class="fbody">
+              <h3>Dynamic Phase-Change Microchannels</h3>
+              <p>Microfluidic channels contain tailored PCMs that can be actively circulated. The flow path and rate are controlled to shift latent heat from rooftop hotspots to cooler zones or to dumps for optimized thermal smoothing.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="tag">02</div>
+            <div class="fbody">
+              <h3>Integrated Thin-Film Thermoelectric Generators (TEGs)</h3>
+              <p>High-efficiency thin-film TEG arrays harvest millivolt differentials between the reflective surface and PCM layers, producing DC power to run local sensors, micro-fans, or export to building microgrids.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="tag">03</div>
+            <div class="fbody">
+              <h3>Self-Cleaning Nano-Reflective Surface</h3>
+              <p>Nano-textured hydrophobic coating combined with scheduled micro-vibration pulses reduces dust accumulation and preserves high albedo throughout seasons with minimal manual maintenance.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="tag">04</div>
+            <div class="fbody">
+              <h3>Modular, Swappable Pod Design</h3>
+              <p>Pods are ~1 m² modules with plug-and-play mechanical mounts and electrical connectors. Swap or replace pods for upgrades, maintenance, or redeployment—ideal for phased rollouts and pilot programs.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="tag">05</div>
+            <div class="fbody">
+              <h3>AI Thermal Mapping & Control</h3>
+              <p>Distributed thermal sensors feed a lightweight edge AI that produces rooftop heat maps. The AI optimizes PCM flow, cleaning cycles, and TEG operating points to maximize cooling and energy yield.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="tag">06</div>
+            <div class="fbody">
+              <h3>Edge Computing & Analytics (SaaS)</h3>
+              <p>On-device controllers run analytics and optionally sync aggregated metrics to a cloud dashboard: energy harvested (kWh), peak temp reduction, maintenance alerts, lifecycle predictions.</p>
+            </div>
+          </div>
+
+          <div class="feature">
+            <div class="tag">07</div>
+            <div class="fbody">
+              <h3>Installation & Maintenance Features</h3>
+              <p>Quick-mount clamps, standardized electrical plugs (DC), modular PCM cartridges for safe swaps, and self-test diagnostics for flow, TEG health, and surface cleanliness.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:14px">
+            <h3>Performance Targets (Prototype)</h3>
+            <table>
+              <tr><th>Metric</th><th>Target (per 10 m²)</th></tr>
+              <tr><td>Peak Temp Reduction</td><td>4–6 °C</td></tr>
+              <tr><td>kWh Harvested / day</td><td>0.5–2 kWh (depends on insolation & delta)</td></tr>
+              <tr><td>Maintenance Interval</td><td>6–18 months (auto-cleaning reduces frequency)</td></tr>
+            </table>
+          </div>
+
+        </main>
+
+        <aside class="panel">
+          <h2>Quick Spec & Tools</h2>
+          <div class="spec" id="specBox">
+            // Basic spec preview — click "Show JSON" for full structured data
+          </div>
+
+          <div style="margin-top:12px">
+            <h3>Pod Layers (top → base)</h3>
+            <ol style="color:var(--muted);margin-top:8px">
+              <li>Self-cleaning reflective topcoat</li>
+              <li>Thin-film TEG array</li>
+              <li>Microfluidic PCM channel matrix</li>
+              <li>Sensor & control cavity</li>
+              <li>Mounting frame & connector</li>
+            </ol>
+          </div>
+
+          <div style="margin-top:12px">
+            <h3>Actions</h3>
+            <div class="controls">
+              <button class="btn" id="exportCSV">Export CSV</button>
+              <button class="btn" id="simulate">Run Sim</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;color:var(--muted)">
+            <strong>Pilot tips:</strong>
+            <ul style="color:var(--muted);margin-top:6px">
+              <li>Start with 50–200 pods on a single rooftop zone</li>
+              <li>Log system for 30 days to tune AI flow policies</li>
+              <li>Partner with local installers for rapid deployment</li>
+            </ul>
+          </div>
+
+        </aside>
+      </div>
+
+      <footer style="margin-top:14px;display:flex;justify-content:space-between;color:var(--muted)">
+        <div>Contact: hi@skycool.example • Pilot kit available</div>
+        <div>© SkyCool Labs</div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const spec = {
+      product: 'SkyCool Flux Pod',
+      pod_area_m2: 1,
+      features: {
+        pcm_microchannels: true,
+        teg_array: true,
+        self_cleaning: true,
+        modular_mount: true,
+        ai_thermal_control: true
+      },
+      performance_targets: {temp_reduction_c: [4,6], kwh_per_10sqm_day: [0.5,2]}
+    };
+
+    document.getElementById('showJSON').addEventListener('click', ()=>{
+      const box = document.getElementById('specBox');
+      box.textContent = JSON.stringify(spec, null, 2);
+    });
+
+    document.getElementById('downloadSpec').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(spec,null,2)], {type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='skycool_spec.json'; a.click();
+    });
+
+    document.getElementById('exportCSV').addEventListener('click', ()=>{
+      const rows = [['metric','value'],['pod_area_m2',spec.pod_area_m2],['temp_reduction_c_min',spec.performance_targets.temp_reduction_c[0]],['temp_reduction_c_max',spec.performance_targets.temp_reduction_c[1]]];
+      const csv = rows.map(r=>r.join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='skycool_metrics.csv'; a.click();
+    });
+
+    document.getElementById('simulate').addEventListener('click', ()=>{
+      alert('Running a simple prototype sim... (placeholder)');
+    });
+  </script>
+</body>
+</html>
