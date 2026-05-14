@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atmospheric Water & Energy Harvester</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #02040d;
+      --surface: #070b16;
+      --surface-strong: #0d1524;
+      --border: rgba(34,211,238,0.18);
+      --cyan: #22d3ee;
+      --cyan-strong: #38bdf8;
+      --text: #e2f7ff;
+      --muted: #8da5b6;
+      --shadow: 0 30px 80px rgba(0,0,0,0.42);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top center, rgba(34,211,238,0.08), transparent 24%), linear-gradient(180deg, #02040d 0%, #03050e 42%, #020408 100%);
+      color: var(--text);
+    }
+    html { scroll-behavior: smooth; }
+    a { color: inherit; text-decoration: none; }
+    .page { width: min(1200px, calc(100% - 32px)); margin: 0 auto; }
+    section { padding: 72px 0; }
+    .hero { min-height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; }
+    .hero::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.14), transparent 24%), radial-gradient(circle at 80% 15%, rgba(56,189,248,0.12), transparent 22%); pointer-events:none; }
+    .hero-bg { position:absolute; top:-12%; left:-8%; width:480px; height:480px; background: rgba(34,211,238,0.16); filter: blur(90px); border-radius:50%; pointer-events:none; }
+    .hero-bg:nth-child(2) { top:auto; bottom:-6%; right:-6%; left:auto; background: rgba(56,189,248,0.14); width:420px; height:420px; }
+    .hero-inner { position: relative; z-index: 1; width:100%; display:grid; place-items:center; padding: 0 16px; }
+    .hero-copy { text-align:center; max-width: 920px; margin: 0 auto 40px; }
+    .hero-copy h1 { margin: 0; font-size: clamp(3rem, 5vw, 5.2rem); line-height: 0.98; letter-spacing: -0.03em; }
+    .hero-copy p { margin: 24px auto 0; max-width: 720px; color: var(--cyan-strong); font-size: 1.05rem; line-height: 1.9; }
+    .hero-model-wrap { display:flex; justify-content:center; }
+    .hero-model { position:relative; width: 340px; height: 460px; border-radius: 40px; border: 1px solid rgba(34,211,238,0.12); background: linear-gradient(180deg, #090f1a 0%, #04101a 100%); box-shadow: inset 0 0 120px rgba(34,211,238,0.08), var(--shadow); overflow:hidden; }
+    .hero-model::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 30% 20%, rgba(34,211,238,0.24), transparent 22%), radial-gradient(circle at 72% 25%, rgba(56,189,248,0.16), transparent 20%); }
+    .pulse-glow { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+    .pulse-ring { width: 320px; height: 320px; border-radius: 50%; background: rgba(34,211,238,0.12); filter: blur(38px); animation: pulseGlow 2.8s ease-in-out infinite; }
+    .device { position:relative; z-index:1; width: 260px; height: 420px; margin: 20px auto 0; border-radius: 40px; border: 1px solid rgba(34,211,238,0.24); background: linear-gradient(180deg, rgba(10,16,27,0.96), rgba(4,8,17,0.98)); box-shadow: inset 0 0 30px rgba(34,211,238,0.1); display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding: 28px 0; }
+    .top-ring { width: 220px; height: 68px; border-radius: 999px; border: 4px solid rgba(34,211,238,0.35); background: rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; box-shadow: 0 0 24px rgba(34,211,238,0.16); animation: spin 12s linear infinite; }
+    .top-ring-inner { width: 140px; height: 34px; border-radius: 999px; border: 1px solid rgba(56,189,248,0.35); }
+    .device-center { position:relative; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: 22px; }
+    .glow-sphere { position:absolute; top: 16px; width: 100px; height: 100px; border-radius: 50%; background: rgba(34,211,238,0.20); filter: blur(28px); opacity: 0.8; }
+    .drop-shell { position:relative; width: 88px; height: 140px; border-radius: 32px; border: 1px solid rgba(34,211,238,0.2); background: rgba(5,11,20,0.92); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .drop-shell::before { content:''; position:absolute; inset:0; background: linear-gradient(180deg, rgba(34,211,238,0.08), transparent 70%); }
+    .water-drop { width: 40px; height: 76px; border-radius: 40px 40px 24px 24px; background: linear-gradient(180deg, #7dd3fc, #22d3ee); transform: rotate(180deg); box-shadow: 0 0 32px rgba(34,211,238,0.35); animation: bounce 1.8s ease-in-out infinite; }
+    .energy-core-wrap { position:relative; width: 80px; height: 80px; display:flex; align-items:center; justify-content:center; }
+    .energy-core-glow { position:absolute; width: 120px; height: 120px; border-radius: 50%; background: rgba(34,211,238,0.14); filter: blur(28px); animation: pulseGlow 3.2s ease-in-out infinite; }
+    .energy-core { width: 64px; height: 64px; border-radius: 50%; border: 4px solid rgba(56,189,248,0.44); background: #020a14; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 28px rgba(34,211,238,0.28); }
+    .energy-core .core-dot { width: 24px; height: 24px; border-radius: 50%; background: #7dd3fc; box-shadow: 0 0 24px rgba(34,211,238,0.55); animation: pulseDot 1.8s ease-in-out infinite; }
+    .device-base { width: 224px; height: 56px; border-radius: 999px; border: 1px solid rgba(34,211,238,0.24); background: #08111f; box-shadow: 0 0 24px rgba(34,211,238,0.12); }
+    .section-title { text-align:center; margin-bottom: 40px; }
+    .section-title h2 { margin: 0; font-size: clamp(2rem, 3vw, 3.2rem); color: #7dd3fc; }
+    .section-title h2 span { display:block; margin-top:8px; color: var(--muted); font-size: 1rem; font-weight:400; }
+    .grid { display:grid; gap: 24px; }
+    .cards-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card { background: rgba(7,13,25,0.92); border: 1px solid rgba(34,211,238,0.18); border-radius: 28px; box-shadow: var(--shadow); padding: 28px; position: relative; overflow:hidden; }
+    .card::before { content:''; position:absolute; top: -20px; right:-20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(34,211,238,0.15), transparent 55%); border-radius: 50%; }
+    .card-number { width: 52px; height: 52px; border-radius: 50%; background: rgba(34,211,238,0.16); border: 1px solid rgba(34,211,238,0.32); color: #d9fbff; display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom: 18px; }
+    .card h3 { margin: 0 0 12px; font-size: 1.2rem; color:#d9fbff; }
+    .card p { margin: 0; color: var(--muted); line-height:1.8; }
+    .features-two-col { display:grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items:center; }
+    .feature-list { display:grid; gap: 16px; }
+    .feature-item-card { display:flex; gap: 14px; align-items:flex-start; padding: 18px 20px; border-radius: 20px; border: 1px solid rgba(34,211,238,0.14); background: rgba(10,16,29,0.9); box-shadow: inset 0 0 20px rgba(34,211,238,0.06); }
+    .feature-item-card .dot { width: 12px; height: 12px; border-radius: 50%; background: #22d3ee; margin-top: 6px; box-shadow: 0 0 18px rgba(34,211,238,0.24); }
+    .feature-item-card p { margin: 0; color: #d8f7ff; font-size: 0.98rem; }
+    .feature-ring { display:flex; align-items:center; justify-content:center; }
+    .feature-ring .ring-outer { width: 250px; height: 250px; border-radius: 50%; border: 1px solid rgba(34,211,238,0.22); display:flex; align-items:center; justify-content:center; position: relative; }
+    .feature-ring .ring-inner { width: 180px; height: 180px; border-radius: 50%; border: 1px solid rgba(34,211,238,0.24); display:flex; align-items:center; justify-content:center; animation: spin 14s linear infinite; }
+    .feature-ring .center-dot { width: 72px; height: 72px; border-radius: 50%; background: rgba(34,211,238,0.12); border: 2px solid rgba(34,211,238,0.3); }
+    .exploded-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .exploded-card { padding: 20px; display:flex; flex-direction:column; gap:16px; align-items:center; justify-content:center; background: rgba(7,13,25,0.9); border: 1px solid rgba(34,211,238,0.16); border-radius: 28px; }
+    .exploded-card .icon { width: 100%; height: auto; max-width: 280px; aspect-ratio: auto; border-radius: 16px; border: 1px solid rgba(34,211,238,0.18); object-fit: contain; box-shadow: inset 0 0 18px rgba(34,211,238,0.08); }
+    .exploded-card h3 { margin: 0; text-align:center; font-size: 0.95rem; color: #d9fbff; }
+    .impact-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .impact-card { background: rgba(7,13,25,0.92); border: 1px solid rgba(34,211,238,0.18); border-radius: 28px; padding: 28px; box-shadow: var(--shadow); text-align:center; }
+    .impact-card h3 { margin: 0; color:#d9fbff; font-size: 1.2rem; }
+    .footer { text-align:center; color: var(--muted); padding: 24px 0 48px; }
+    @media (max-width: 980px) { .cards-4, .exploded-grid, .impact-grid, .features-two-col { grid-template-columns: 1fr; } .hero { min-height: auto; padding: 64px 0; } .hero-model { width: 100%; max-width: 360px; height: 420px; } }
+    @media (max-width: 640px) { .page { padding:0 12px; } .hero-copy h1 { font-size: 2.8rem; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+    @keyframes pulseGlow { 0%,100% { transform: scale(1); opacity: .7; } 50% { transform: scale(1.08); opacity: .95; } }
+    @keyframes pulseDot { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: .8; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-bg"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <h1>Atmospheric Water & Energy Harvester</h1>
+          <p>A futuristic sustainable system that extracts water from air and converts atmospheric energy into clean renewable power.</p>
+        </div>
+        <div class="hero-model-wrap">
+          <div class="hero-model">
+            <div class="pulse-glow"><div class="pulse-ring"></div></div>
+            <div class="device">
+              <div class="top-ring"><div class="top-ring-inner"></div></div>
+              <div class="device-center">
+                <div class="glow-sphere"></div>
+                <div class="drop-shell"><div class="water-drop"></div></div>
+                <div class="energy-core-wrap">
+                  <div class="energy-core-glow"></div>
+                  <div class="energy-core"><div class="core-dot"></div></div>
+                </div>
+              </div>
+              <div class="device-base"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><h2>How It Works</h2></div>
+      <div class="grid cards-4">
+        <div class="card"><div class="card-number">1</div><h3>Air Intake</h3><p>Captures atmospheric air using futuristic intake rings.</p></div>
+        <div class="card"><div class="card-number">2</div><h3>Moisture Capture</h3><p>Advanced filtration condenses moisture into clean water.</p></div>
+        <div class="card"><div class="card-number">3</div><h3>Water Storage</h3><p>Purified water gets stored in the central chamber.</p></div>
+        <div class="card"><div class="card-number">4</div><h3>Energy Generation</h3><p>Energy core converts atmospheric energy into renewable power.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><h2>Futuristic Features</h2></div>
+      <div class="features-two-col">
+        <div class="feature-list">
+          <div class="feature-item-card"><span class="dot"></span><p>Atmospheric Water Generation</p></div>
+          <div class="feature-item-card"><span class="dot"></span><p>AI Powered Energy Core</p></div>
+          <div class="feature-item-card"><span class="dot"></span><p>Zero Emission Technology</p></div>
+          <div class="feature-item-card"><span class="dot"></span><p>Self Sustainable Design</p></div>
+          <div class="feature-item-card"><span class="dot"></span><p>Smart Filtration System</p></div>
+          <div class="feature-item-card"><span class="dot"></span><p>Futuristic Modular Architecture</p></div>
+        </div>
+        <div class="feature-ring">
+          <div class="ring-outer">
+            <div class="ring-inner"><div class="center-dot"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><h2>Exploded Parts View</h2></div>
+      <div class="grid exploded-grid">
+        <div class="exploded-card"><img class="icon" src="/uuy/assets/images/air-intake-ring.png" alt="Air Intake Ring"><h3>Air Intake Ring</h3></div>
+        <div class="exploded-card"><img class="icon" src="/uuy/assets/images/filtration-module.png" alt="Filtration Module"><h3>Filtration Module</h3></div>
+        <div class="exploded-card"><img class="icon" src="/uuy/assets/images/water-tank.png" alt="Water Tank"><h3>Water Tank</h3></div>
+        <div class="exploded-card"><img class="icon" src="/uuy/assets/images/energy-core-module.png" alt="Energy Core Module"><h3>Energy Core Module</h3></div>
+        <div class="exploded-card"><img class="icon" src="/uuy/assets/images/power-base.png" alt="Power Base"><h3>Power Base</h3></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><h2>Future Impact</h2></div>
+      <div class="grid impact-grid">
+        <div class="impact-card"><h3>Reduces Pollution</h3></div>
+        <div class="impact-card"><h3>Generates Clean Water</h3></div>
+        <div class="impact-card"><h3>Supports Sustainable Future</h3></div>
+      </div>
+    </section>
+
+    <footer class="footer">Atmospheric Water & Energy Harvester � Futuristic Sustainable Innovation</footer>
+  </div>
+</body>
+</html>
